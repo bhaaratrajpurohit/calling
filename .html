@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Calling Receptionist — Cost & Retainer Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #17171f;
+    --surface3: #1e1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --accent-glow: rgba(108,99,255,0.18);
+    --green: #22d3a0;
+    --green-bg: rgba(34,211,160,0.08);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.08);
+    --amber: #fbbf24;
+    --amber-bg: rgba(251,191,36,0.08);
+    --blue: #60a5fa;
+    --text: #f0f0f8;
+    --text2: #9898b8;
+    --text3: #5a5a7a;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* Grid background */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ─── HEADER ─────────────────────────── */
+  .site-header {
+    padding: 48px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .header-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 540px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* ─── SECTION LABELS ─────────────────── */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── CARDS ──────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color var(--transition);
+  }
+
+  .card:hover { border-color: var(--border2); }
+
+  .card-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ─── GRID LAYOUTS ───────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+
+  @media(max-width:700px) {
+    .grid-2,.grid-3,.grid-5 { grid-template-columns: 1fr 1fr; }
+  }
+  @media(max-width:480px) {
+    .grid-2,.grid-3,.grid-5 { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FORM CONTROLS ──────────────────── */
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .field-label .field-val {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent2);
+    font-weight: 400;
+    background: var(--accent-glow);
+    padding: 1px 8px;
+    border-radius: 4px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 8px var(--accent-glow);
+    cursor: pointer;
+    transition: transform var(--transition);
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  select, input[type="text"], input[type="number"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c63ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+  }
+
+  select:focus, input[type="text"]:focus, input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  /* ─── METRIC CARDS ───────────────────── */
+  .metric {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .metric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+
+  .metric:hover { transform: translateY(-1px); border-color: var(--border2); }
+  .metric:hover::before { opacity: 1; }
+
+  .metric-icon {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .metric-val {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .metric-val.green { color: var(--green); }
+  .metric-val.amber { color: var(--amber); }
+  .metric-val.red { color: var(--red); }
+  .metric-val.blue { color: var(--blue); }
+
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+    font-family: var(--font-mono);
+  }
+
+  /* ─── BREAKDOWN TABLE ────────────────── */
+  .breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .breakdown-table th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breakdown-table th:last-child { text-align: right; }
+
+  .breakdown-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  .breakdown-table td:last-child {
+    text-align: right;
+    font-family: var(--font-mono);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .breakdown-table td .td-main {
+    color: var(--text);
+    font-weight: 400;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .breakdown-table td .td-sub {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+  }
+
+  .breakdown-table tr.section-head td {
+    background: var(--surface3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breakdown-table tr.subtotal-row td {
+    background: var(--surface2);
+    font-weight: 500;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .breakdown-table tr.total-cost-row td {
+    color: var(--red);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--red-bg);
+    border-bottom: none;
+  }
+
+  .breakdown-table tr.charge-row td {
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--green-bg);
+    border-bottom: none;
+  }
+
+  .breakdown-table tr.profit-row td {
+    color: var(--amber);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--amber-bg);
+    border-bottom: none;
+  }
+
+  /* ─── TIER CARDS ─────────────────────── */
+  .tier-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .tier-card:hover { transform: translateY(-2px); }
+
+  .tier-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(108,99,255,0.06) 100%);
+  }
+
+  .tier-card.featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .tier-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .tier-name {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .tier-calls {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    margin-bottom: 16px;
+  }
+
+  .tier-price {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--accent2);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .tier-per {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 16px;
+  }
+
+  .tier-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+
+  .tier-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 3px 0;
+  }
+
+  .tier-line span:first-child { color: var(--text3); }
+  .tier-line span:last-child { color: var(--text2); font-family: var(--font-mono); }
+
+  /* ─── PLATFORM MANAGER ───────────────── */
+  .platform-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .platform-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: border-color var(--transition);
+  }
+
+  .platform-item:hover { border-color: var(--border2); }
+
+  .platform-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .platform-name {
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .platform-rate {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent2);
+    background: var(--accent-glow);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .platform-del {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color var(--transition);
+  }
+
+  .platform-del:hover { color: var(--red); }
+
+  .add-platform-form {
+    display: grid;
+    grid-template-columns: 1fr 150px auto;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: end;
+  }
+
+  @media(max-width:600px) {
+    .add-platform-form { grid-template-columns: 1fr; }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    white-space: nowrap;
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-accent:hover { background: #7c74ff; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(108,99,255,0.35); }
+
+  .btn-ghost {
+    background: var(--surface3);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  /* ─── BUFFER EXPLAINER ───────────────── */
+  .buffer-explainer {
+    background: var(--surface2);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-left: 3px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+
+  .buffer-explainer h3 {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--amber);
+  }
+
+  .buffer-explainer p {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .buffer-explainer p:last-child { margin-bottom: 0; }
+
+  .buffer-examples {
+    list-style: none;
+    margin: 10px 0;
+  }
+
+  .buffer-examples li {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 5px 0 5px 20px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .buffer-examples li:last-child { border-bottom: none; }
+
+  .buffer-examples li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--amber);
+    font-family: var(--font-mono);
+  }
+
+  /* ─── SETUP FEE CALLOUT ──────────────── */
+  .setup-callout {
+    background: linear-gradient(135deg, var(--surface2) 0%, rgba(108,99,255,0.06) 100%);
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .setup-callout-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .setup-callout h3 {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .setup-callout p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .setup-callout .price-range {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--accent2);
+    margin-top: 8px;
+  }
+
+  /* ─── RATES REFERENCE ────────────────── */
+  .rates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+
+  .rate-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+
+  .rate-chip-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .rate-chip-val { font-family: var(--font-mono); font-size: 16px; color: var(--text); }
+
+  /* ─── FOOTER ─────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 40px 0 0;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  .footer a { color: var(--accent2); text-decoration: none; }
+
+  /* ─── DIVIDER ─────────────────────────── */
+  .spacer { height: 32px; }
+
+  /* ─── SCROLL ANIMATION ───────────────── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeIn 0.5s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: none; }
+  }
+
+  .fade-in:nth-child(1) { animation-delay: 0.05s; }
+  .fade-in:nth-child(2) { animation-delay: 0.1s; }
+  .fade-in:nth-child(3) { animation-delay: 0.15s; }
+  .fade-in:nth-child(4) { animation-delay: 0.2s; }
+  .fade-in:nth-child(5) { animation-delay: 0.25s; }
+
+  /* ─── TOOLTIP ─────────────────────────── */
+  .tooltip-wrap { position: relative; display: inline-flex; }
+  .tooltip-icon {
+    width: 15px; height: 15px;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 50%;
+    font-size: 10px;
+    color: var(--text3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    margin-left: 5px;
+    flex-shrink: 0;
+  }
+
+  /* Small info tag */
+  .info-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    padding: 1px 6px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .info-tag.amber { background: var(--amber-bg); color: var(--amber); }
+  .info-tag.green { background: var(--green-bg); color: var(--green); }
+  .info-tag.blue { background: rgba(96,165,250,0.08); color: var(--blue); }
+
+  /* ─── MOBILE TWEAKS ──────────────────── */
+  @media(max-width:600px) {
+    .page-wrap { padding: 0 16px 60px; }
+    .card { padding: 16px; }
+    h1 { font-size: 26px; }
+    .metric-val { font-size: 18px; }
+    .tier-price { font-size: 22px; }
+    .breakdown-table { font-size: 12px; }
+    .breakdown-table td, .breakdown-table th { padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header class="site-header fade-in">
+    <div class="header-badge">Real Estate · AI Automation · Live Pricing</div>
+    <h1>AI Calling Receptionist<br><span>Cost & Retainer Calculator</span></h1>
+    <p class="header-sub">Every rupee accounted for — Twilio number rental, per-minute voice charges, AI platform, CRM integration & your profit margin.</p>
+  </header>
+
+  <!-- TWILIO REFERENCE RATES -->
+  <div class="spacer"></div>
+  <div class="section-label">Twilio India — Live Reference Rates (2026)</div>
+  <div class="rates-grid fade-in">
+    <div class="rate-chip"><div class="rate-chip-label">Outbound → Mobile</div><div class="rate-chip-val">₹1.20 / min</div></div>
+    <div class="rate-chip"><div class="rate-chip-label">Outbound → Landline</div><div class="rate-chip-val">₹0.65 / min</div></div>
+    <div class="rate-chip"><div class="rate-chip-label">Inbound calls</div><div class="rate-chip-val">₹0.35 / min</div></div>
+    <div class="rate-chip"><div class="rate-chip-label">Number rental</div><div class="rate-chip-val">₹200 / no. / mo</div></div>
+    <div class="rate-chip"><div class="rate-chip-label">Failed attempt fee</div><div class="rate-chip-val">₹1.26 / attempt</div></div>
+  </div>
+
+  <!-- BUFFER EXPLAINER -->
+  <div class="spacer"></div>
+  <div class="section-label">What is the 10% Buffer? — Read This First</div>
+  <div class="buffer-explainer fade-in">
+    <h3>⚡ Buffer = Your Safety Net Against Hidden Costs</h3>
+    <p>When you add up all your costs — Twilio, AI platform, CRM — that is your <strong>calculated cost</strong>. But in real-world calling operations, your <em>actual bill</em> is always higher than what you calculated. The 10% buffer covers that gap.</p>
+    <p>Here is exactly what eats into your margin if you don't keep a buffer:</p>
+    <ul class="buffer-examples">
+      <li><strong>Failed call attempts that Twilio still charges:</strong> If a lead doesn't pick up, Twilio charges ₹1.26 per attempt anyway. 100 unanswered calls = ₹126 gone, silently.</li>
+      <li><strong>Call rounding:</strong> Twilio bills per minute rounded <em>up</em>. A 2 min 10 sec call is billed as 3 full minutes. On 500 calls, this inflates your actual minutes by 15–20%.</li>
+      <li><strong>LLM token overruns:</strong> When leads ask unexpected questions, the AI burns more tokens than a standard conversation. Your AI platform bill spikes.</li>
+      <li><strong>Re-dials & retries:</strong> If a call drops mid-conversation (network issue), the system re-attempts — double billing on telephony AND AI for that call.</li>
+      <li><strong>Voicemail detection time:</strong> The AI stays on the line for 10–15 seconds detecting a voicemail. That time is billed. 200 voicemails/month = ~40 billed minutes you didn't plan for.</li>
+      <li><strong>Mid-month platform fee changes:</strong> Some AI platforms change their rates or add surcharges without prominent notice.</li>
+    </ul>
+    <p style="margin-top:12px;font-size:13px;color:var(--amber)">→ <strong>Bottom line:</strong> Always price with a buffer. 10% is conservative for real estate calling. You can use the slider below to adjust it between 5% and 25% based on your risk appetite.</p>
+  </div>
+
+  <!-- SETUP FEE -->
+  <div class="setup-callout fade-in">
+    <div class="setup-callout-icon">🚀</div>
+    <div>
+      <h3>One-Time Setup Fee — Charge Separately</h3>
+      <p>This calculator covers the <strong>monthly retainer</strong> only. For new clients, charge a one-time setup fee on top for: building the AI agent, scripting the real estate qualification flow, Twilio number purchase & configuration, CRM integration setup, and UAT testing calls.</p>
+      <div class="price-range">₹10,000 – ₹25,000</div>
+      <span class="info-tag green">one-time · not in retainer</span>
+    </div>
+  </div>
+
+  <!-- CONFIGURE -->
+  <div class="spacer"></div>
+  <div class="section-label">Configure Your Setup</div>
+
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Call Volume & Duration</div>
+
+      <div class="field">
+        <div class="field-label">Total calls/month <span class="field-val" id="lbl-calls">500</span></div>
+        <input type="range" id="sl-calls" min="50" max="3000" step="50" value="500">
+      </div>
+
+      <div class="field">
+        <div class="field-label">Avg call duration (mins) <span class="field-val" id="lbl-dur">3.0</span></div>
+        <input type="range" id="sl-dur" min="1" max="12" step="0.5" value="3">
+      </div>
+
+      <div class="field">
+        <div class="field-label">Outbound % (to mobiles) <span class="field-val" id="lbl-ob">70%</span></div>
+        <input type="range" id="sl-ob" min="0" max="100" step="5" value="70">
+      </div>
+
+      <div class="field">
+        <div class="field-label">No-answer / unanswered rate <span class="field-val" id="lbl-miss">30%</span></div>
+        <input type="range" id="sl-miss" min="5" max="65" step="5" value="30">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Twilio & Platform Setup</div>
+
+      <div class="field">
+        <div class="field-label">Twilio numbers rented <span class="field-val" id="lbl-nums">2</span></div>
+        <input type="range" id="sl-nums" min="1" max="10" step="1" value="2">
+      </div>
+
+      <div class="field">
+        <div class="field-label">AI platform <span class="info-tag blue">affects per-min cost</span></div>
+        <select id="sel-platform"></select>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Buffer % <span class="field-val" id="lbl-buf">10%</span></div>
+        <input type="range" id="sl-buf" min="5" max="25" step="1" value="10">
+      </div>
+
+      <div class="field">
+        <div class="field-label">Your target margin <span class="field-val" id="lbl-margin">40%</span></div>
+        <input type="range" id="sl-margin" min="15" max="70" step="5" value="40">
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM MANAGER -->
+  <div class="spacer"></div>
+  <div class="section-label">Manage AI Platforms — Add Your Private Platform</div>
+  <div class="card fade-in">
+    <div class="card-title"><span class="dot"></span>Platform Registry</div>
+    <div class="platform-list" id="platform-list"></div>
+
+    <div class="add-platform-form" id="add-form">
+      <div>
+        <div class="field-label" style="margin-bottom:6px">Platform name</div>
+        <input type="text" id="inp-pname" placeholder="e.g. My Private Platform" />
+      </div>
+      <div>
+        <div class="field-label" style="margin-bottom:6px">Cost (USD/min)</div>
+        <input type="number" id="inp-prate" placeholder="0.00" min="0" step="0.001" />
+      </div>
+      <div style="padding-top:22px">
+        <button class="btn btn-accent" onclick="addPlatform()">+ Add Platform</button>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:12px;font-family:var(--font-mono)">
+      → Enter the per-minute USD cost your private platform charges. It will immediately appear in the AI Platform dropdown above and be included in all cost calculations.
+    </p>
+  </div>
+
+  <!-- METRICS -->
+  <div class="spacer"></div>
+  <div class="section-label">Live Monthly Summary</div>
+  <div class="grid-5 fade-in" id="metrics-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+
+  <!-- BREAKDOWN TABLE -->
+  <div class="spacer"></div>
+  <div class="section-label">Full Cost Breakdown</div>
+  <div class="card fade-in" style="padding:0;overflow:hidden">
+    <table class="breakdown-table" id="breakdown-table"></table>
+  </div>
+
+  <!-- RETAINER TIERS -->
+  <div class="spacer"></div>
+  <div class="section-label">Suggested Retainer Tiers to Offer Clients</div>
+  <div class="grid-3 fade-in" id="tiers-grid"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Rates sourced from Twilio India pricing (Jan 2026). USD/INR = ₹84. All figures are estimates — actual billing may vary.</p>
+    <p style="margin-top:6px">Built for Real Estate AI Automation · <a href="#">GitHub</a></p>
+  </footer>
+
+</div>
+
+<script>
+// ─── PLATFORM DATA ───────────────────────────────────────────────────────────
+let platforms = [
+  { id: 'retell', name: 'Retell AI', usd: 0.07, locked: true },
+  { id: 'bland',  name: 'Bland AI',  usd: 0.12, locked: true },
+  { id: 'vapi',   name: 'Vapi',      usd: 0.18, locked: true },
+];
+let selectedPlatformId = 'retell';
+
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const USD = 84;
+const TW_OUTBOUND_MOBILE = 1.20;
+const TW_OUTBOUND_LAND   = 0.65;
+const TW_INBOUND         = 0.35;
+const TW_NUM_RENTAL      = 200;
+const TW_FAILED_ATTEMPT  = 0.015 * USD; // ₹1.26 per failed attempt
+const AGENT_MAINT        = 3000;
+const CRM_INTEG          = 1500;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const r  = n  => Math.round(n);
+const fmt = n => '₹' + r(n).toLocaleString('en-IN');
+const fmtD = n => n.toLocaleString('en-IN');
+
+function sliderVal(id) { return parseFloat($(id).value); }
+
+function getConfig() {
+  return {
+    calls:   sliderVal('sl-calls'),
+    dur:     sliderVal('sl-dur'),
+    obPct:   sliderVal('sl-ob') / 100,
+    missPct: sliderVal('sl-miss') / 100,
+    nums:    sliderVal('sl-nums'),
+    bufPct:  sliderVal('sl-buf') / 100,
+    margin:  sliderVal('sl-margin') / 100,
+    platform: platforms.find(p => p.id === selectedPlatformId) || platforms[0],
+  };
+}
+
+// ─── RENDER PLATFORM SELECT ───────────────────────────────────────────────────
+function renderPlatformSelect() {
+  const sel = $('sel-platform');
+  const cur = sel.value;
+  sel.innerHTML = platforms.map(p =>
+    `<option value="${p.id}" ${p.id === selectedPlatformId ? 'selected' : ''}>
+      ${p.name} — $${p.usd.toFixed(3)}/min
+    </option>`
+  ).join('');
+  sel.onchange = () => { selectedPlatformId = sel.value; compute(); };
+}
+
+// ─── RENDER PLATFORM LIST ────────────────────────────────────────────────────
+function renderPlatformList() {
+  const list = $('platform-list');
+  list.innerHTML = platforms.map(p => `
+    <div class="platform-item">
+      <div class="platform-dot" style="background:${p.locked ? '#6c63ff' : '#22d3a0'}"></div>
+      <div class="platform-name">${p.name}${p.locked ? ' <span style="font-size:10px;color:var(--text3);font-family:var(--font-mono)">[built-in]</span>' : ''}</div>
+      <div class="platform-rate">$${p.usd.toFixed(3)}/min · ₹${(p.usd * USD).toFixed(2)}/min</div>
+      ${!p.locked ? `<button class="platform-del" onclick="removePlatform('${p.id}')" title="Remove">✕</button>` : ''}
+    </div>
+  `).join('');
+}
+
+function addPlatform() {
+  const name = $('inp-pname').value.trim();
+  const rate = parseFloat($('inp-prate').value);
+  if (!name) { $('inp-pname').focus(); $('inp-pname').style.borderColor = 'var(--red)'; return; }
+  if (!rate || rate <= 0) { $('inp-prate').focus(); $('inp-prate').style.borderColor = 'var(--red)'; return; }
+  $('inp-pname').style.borderColor = ''; $('inp-prate').style.borderColor = '';
+  const id = 'custom_' + Date.now();
+  platforms.push({ id, name, usd: rate, locked: false });
+  $('inp-pname').value = ''; $('inp-prate').value = '';
+  renderPlatformSelect();
+  renderPlatformList();
+  compute();
+}
+
+function removePlatform(id) {
+  platforms = platforms.filter(p => p.id !== id);
+  if (selectedPlatformId === id) selectedPlatformId = platforms[0].id;
+  renderPlatformSelect();
+  renderPlatformList();
+  compute();
+}
+
+// ─── MAIN COMPUTE ─────────────────────────────────────────────────────────────
+function compute() {
+  const c = getConfig();
+
+  // Call volumes
+  const connectedCalls  = c.calls;
+  const totalAttempts   = Math.round(connectedCalls / (1 - c.missPct));
+  const failedAttempts  = totalAttempts - connectedCalls;
+  const obCalls         = Math.round(connectedCalls * c.obPct);
+  const ibCalls         = connectedCalls - obCalls;
+  const obMins          = obCalls * c.dur;
+  const ibMins          = ibCalls * c.dur;
+  const totalMins       = obMins + ibMins;
+
+  // Twilio costs
+  const tw_numRental    = c.nums * TW_NUM_RENTAL;
+  const tw_outboundMob  = obMins * TW_OUTBOUND_MOBILE;
+  const tw_inbound      = ibMins * TW_INBOUND;
+  const tw_failedAttempt= failedAttempts * TW_FAILED_ATTEMPT;
+  const tw_total        = tw_numRental + tw_outboundMob + tw_inbound + tw_failedAttempt;
+
+  // AI platform cost
+  const ai_perMin       = c.platform.usd * USD;
+  const ai_total        = totalMins * c.platform.usd * USD;
+  // Bland has a $299/mo subscription fee — spread as fixed cost
+  const platform_sub    = c.platform.id === 'bland' ? r(299 * USD / 30) * 30 / 30 : 0; // ~₹840/mo spread
+  const bland_fee       = c.platform.id === 'bland' ? r(299 * USD) : 0;
+
+  // Fixed
+  const fixed_total     = AGENT_MAINT + CRM_INTEG;
+
+  // Totals
+  const rawCost         = tw_total + ai_total + bland_fee + fixed_total;
+  const buffer          = rawCost * c.bufPct;
+  const totalCost       = rawCost + buffer;
+  const retainer        = totalCost / (1 - c.margin);
+  const profit          = retainer - totalCost;
+  const perCallCost     = totalCost / connectedCalls;
+  const perCallCharge   = retainer / connectedCalls;
+
+  // ── UPDATE LABELS ─────────────────────────────────────────────────────────
+  $('lbl-calls').textContent  = r(c.calls).toLocaleString('en-IN');
+  $('lbl-dur').textContent    = c.dur.toFixed(1);
+  $('lbl-ob').textContent     = r(c.obPct * 100) + '%';
+  $('lbl-miss').textContent   = r(c.missPct * 100) + '%';
+  $('lbl-nums').textContent   = r(c.nums);
+  $('lbl-buf').textContent    = r(c.bufPct * 100) + '%';
+  $('lbl-margin').textContent = r(c.margin * 100) + '%';
+
+  // ── METRICS ───────────────────────────────────────────────────────────────
+  $('metrics-grid').innerHTML = [
+    { icon: '📞', label: 'Connected Calls', val: fmtD(r(connectedCalls)), sub: fmtD(r(totalAttempts)) + ' total attempts', cls: '' },
+    { icon: '⏱️', label: 'Total Minutes', val: fmtD(r(totalMins)), sub: r(obMins) + ' out + ' + r(ibMins) + ' in', cls: '' },
+    { icon: '💸', label: 'Your Cost / Month', val: fmt(totalCost), sub: fmt(perCallCost) + ' per call', cls: 'red' },
+    { icon: '🧾', label: 'Charge Client', val: fmt(retainer), sub: fmt(perCallCharge) + ' per call', cls: 'green' },
+    { icon: '📈', label: 'Your Profit', val: fmt(profit), sub: r(c.margin * 100) + '% margin', cls: 'amber' },
+  ].map(m => `
+    <div class="metric">
+      <span class="metric-icon">${m.icon}</span>
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-val ${m.cls}">${m.val}</div>
+      <div class="metric-sub">${m.sub}</div>
+    </div>
+  `).join('');
+
+  // ── BREAKDOWN TABLE ───────────────────────────────────────────────────────
+  const blandRow = bland_fee > 0 ? `
+    <tr>
+      <td><span class="td-main">Bland AI Plan Fee (Build)</span><span class="td-sub">$299/mo subscription — required for &gt;100 calls/day concurrency</span></td>
+      <td class="td-calc">Fixed · $299 × ₹${USD}</td>
+      <td>${fmt(bland_fee)}</td>
+    </tr>` : '';
+
+  $('breakdown-table').innerHTML = `
+    <thead>
+      <tr>
+        <th style="width:42%">Cost Item</th>
+        <th>Calculation</th>
+        <th>Amount/mo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="section-head"><td colspan="3">📡 Twilio — Telephony & Number Costs</td></tr>
+      <tr>
+        <td><span class="td-main">Phone Number Rental</span><span class="td-sub">₹200 per Twilio India number per month</span></td>
+        <td>${r(c.nums)} number${r(c.nums)>1?'s':''} × ₹200</td>
+        <td>${fmt(tw_numRental)}</td>
+      </tr>
+      <tr>
+        <td><span class="td-main">Outbound Calls → Mobiles</span><span class="td-sub">₹1.20/min · ${r(obCalls)} calls × ${c.dur.toFixed(1)} min avg</span></td>
+        <td>${r(obMins).toLocaleString('en-IN')} mins × ₹1.20</td>
+        <td>${fmt(tw_outboundMob)}</td>
+      </tr>
+      <tr>
+        <td><span class="td-main">Inbound Calls (leads calling back)</span><span class="td-sub">₹0.35/min · ${r(ibCalls)} calls × ${c.dur.toFixed(1)} min avg</span></td>
+        <td>${r(ibMins).toLocaleString('en-IN')} mins × ₹0.35</td>
+        <td>${fmt(tw_inbound)}</td>
+      </tr>
+      <tr>
+        <td><span class="td-main">Failed Attempt Fee</span><span class="td-sub">$0.015/attempt even when nobody picks up — ${r(failedAttempts)} failed attempts this config</span></td>
+        <td>${r(failedAttempts).toLocaleString('en-IN')} attempts × ₹${TW_FAILED_ATTEMPT.toFixed(2)}</td>
+        <td>${fmt(tw_failedAttempt)}</td>
+      </tr>
+      <tr class="subtotal-row">
+        <td colspan="2">Twilio Subtotal</td>
+        <td>${fmt(tw_total)}</td>
+      </tr>
+
+      <tr class="section-head"><td colspan="3">🤖 AI Platform — ${c.platform.name} ($${c.platform.usd.toFixed(3)}/min)</td></tr>
+      <tr>
+        <td><span class="td-main">Voice AI Per Minute</span><span class="td-sub">Includes STT (speech-to-text) + LLM reasoning + TTS (text-to-speech) bundled</span></td>
+        <td>${r(totalMins).toLocaleString('en-IN')} mins × $${c.platform.usd} × ₹${USD}</td>
+        <td>${fmt(ai_total)}</td>
+      </tr>
+      ${blandRow}
+      <tr class="subtotal-row">
+        <td colspan="2">AI Platform Subtotal</td>
+        <td>${fmt(ai_total + bland_fee)}</td>
+      </tr>
+
+      <tr class="section-head"><td colspan="3">🔧 Fixed Monthly Costs</td></tr>
+      <tr>
+        <td><span class="td-main">Agent Maintenance</span><span class="td-sub">Prompt updates, script tweaks, edge-case fixes, testing calls</span></td>
+        <td>Fixed monthly</td>
+        <td>${fmt(AGENT_MAINT)}</td>
+      </tr>
+      <tr>
+        <td><span class="td-main">CRM / Lead Integration</span><span class="td-sub">Zapier / webhook → HubSpot / Salesforce / Google Sheets</span></td>
+        <td>Fixed monthly</td>
+        <td>${fmt(CRM_INTEG)}</td>
+      </tr>
+      <tr class="subtotal-row">
+        <td colspan="2">Fixed Subtotal</td>
+        <td>${fmt(fixed_total)}</td>
+      </tr>
+
+      <tr class="section-head"><td colspan="3">⚡ Buffer (Safety Net)</td></tr>
+      <tr>
+        <td><span class="td-main">Buffer @ ${r(c.bufPct * 100)}%</span><span class="td-sub">Covers: call rounding, retries, voicemail detection time, LLM token overruns, failed attempts. See explanation above.</span></td>
+        <td>${fmt(rawCost)} × ${r(c.bufPct * 100)}%</td>
+        <td>${fmt(buffer)}</td>
+      </tr>
+
+      <tr class="total-cost-row">
+        <td colspan="2">🔴 Total Cost to YOU (per month)</td>
+        <td>${fmt(totalCost)}</td>
+      </tr>
+      <tr class="charge-row">
+        <td colspan="2">🟢 Monthly Retainer to Charge Client (${r(c.margin * 100)}% margin)</td>
+        <td>${fmt(retainer)}</td>
+      </tr>
+      <tr class="profit-row">
+        <td colspan="2">🟡 Your Monthly Profit</td>
+        <td>${fmt(profit)}</td>
+      </tr>
+    </tbody>
+  `;
+
+  // ── TIER CARDS ────────────────────────────────────────────────────────────
+  const tierConfigs = [
+    { name: 'Starter', calls: 300, badge: null },
+    { name: 'Growth',  calls: 800, badge: 'Most Popular' },
+    { name: 'Scale',   calls: 2000, badge: null },
+  ];
+
+  function tierCalc(tcalls) {
+    const ta = Math.round(tcalls / (1 - c.missPct));
+    const fa = ta - tcalls;
+    const ob = Math.round(tcalls * c.obPct);
+    const ib = tcalls - ob;
+    const obm = ob * c.dur, ibm = ib * c.dur, tm = obm + ibm;
+    const tw = (c.nums * TW_NUM_RENTAL) + (obm * TW_OUTBOUND_MOBILE) + (ibm * TW_INBOUND) + (fa * TW_FAILED_ATTEMPT);
+    const ai = tm * c.platform.usd * USD;
+    const bf = c.platform.id === 'bland' ? r(299 * USD) : 0;
+    const raw = tw + ai + bf + AGENT_MAINT + CRM_INTEG;
+    const buf = raw * c.bufPct;
+    const tot = raw + buf;
+    const ret = Math.ceil(tot / (1 - c.margin) / 1000) * 1000;
+    return { cost: r(tot), ret, profit: r(ret - tot), perCall: r(ret / tcalls) };
+  }
+
+  const activeTier = c.calls <= 450 ? 0 : c.calls <= 1100 ? 1 : 2;
+
+  $('tiers-grid').innerHTML = tierConfigs.map((t, i) => {
+    const d = tierCalc(t.calls);
+    const isActive = activeTier === i;
+    return `
+      <div class="tier-card ${isActive ? 'featured' : ''}">
+        ${t.badge ? `<div class="tier-badge">${t.badge}</div>` : (isActive ? '<div class="tier-badge" style="background:var(--green)">Your Config</div>' : '<div style="height:26px"></div>')}
+        <div class="tier-name">${t.name}</div>
+        <div class="tier-calls">Up to ${t.calls.toLocaleString('en-IN')} calls/month</div>
+        <div class="tier-price">${fmt(d.ret)}</div>
+        <div class="tier-per">/month retainer</div>
+        <div class="tier-divider"></div>
+        <div class="tier-line"><span>Your cost</span><span>${fmt(d.cost)}</span></div>
+        <div class="tier-line"><span>Your profit</span><span style="color:var(--green)">${fmt(d.profit)}</span></div>
+        <div class="tier-line"><span>Per call</span><span>${fmt(d.perCall)}</span></div>
+        <div class="tier-line"><span>AI platform</span><span>${c.platform.name}</span></div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── EVENT LISTENERS ──────────────────────────────────────────────────────────
+['sl-calls','sl-dur','sl-ob','sl-miss','sl-nums','sl-buf','sl-margin'].forEach(id => {
+  $(id).addEventListener('input', compute);
+});
+
+['inp-pname','inp-prate'].forEach(id => {
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') addPlatform(); });
+  $(id).addEventListener('input', () => { $(id).style.borderColor = ''; });
+});
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderPlatformList();
+renderPlatformSelect();
+compute();
+</script>
+</body>
+</html>
