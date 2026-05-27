@@ -24,12 +24,10 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(232,96,60,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
 
-/* ── PAGE SYSTEM ── */
 .page{display:none;position:relative;z-index:1}
 .page.active{display:block}
 .wrap{max-width:980px;margin:0 auto;padding:0 28px 100px}
 
-/* ── NAV BAR ── */
 .navbar{position:sticky;top:0;z-index:100;background:rgba(14,14,14,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px}
 .navbar-inner{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:16px}
 .nav-brand{font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:8px}
@@ -39,7 +37,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .nav-tab:hover{color:var(--text2);background:var(--s2)}
 .nav-tab.active{color:var(--text);background:var(--s2);border:1px solid var(--border2)}
 
-/* ── HEADER ── */
 .hdr{padding:40px 0 32px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;border-bottom:1px solid var(--border)}
 .hdr-left{flex:1}
 .hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px}
@@ -48,7 +45,6 @@ h1{font-family:var(--fh);font-size:clamp(28px,4vw,46px);font-weight:900;line-hei
 h1 em{font-style:normal;color:var(--coral)}
 .hdr-sub{font-size:13px;color:var(--text3);margin-top:10px;max-width:420px;line-height:1.7}
 
-/* ── RATE PANEL (header right) ── */
 .rate-panel{background:var(--s1);border:1px solid var(--border2);border-radius:var(--r2);padding:16px 18px;flex-shrink:0;min-width:210px}
 .rate-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .rate-panel-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
@@ -56,38 +52,59 @@ h1 em{font-style:normal;color:var(--coral)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.35}}
 .rate-edit-btn{background:var(--s3);border:1px solid var(--border2);border-radius:6px;color:var(--text3);font-family:var(--fm);font-size:10px;cursor:pointer;padding:3px 9px;transition:all 0.15s}
 .rate-edit-btn:hover{color:var(--coral2);border-color:var(--coral-border)}
-.rate-rows{}
 .rate-row-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
 .rate-row-item:last-child{border-bottom:none}
 .rate-row-lbl{font-family:var(--fm);font-size:10px;color:var(--text3)}
 .rate-row-val{font-family:var(--fm);font-size:12px;font-weight:500;color:var(--text2)}
 
-/* ── SECTION TITLE ── */
 .stitle{display:flex;align-items:center;gap:12px;margin:32px 0 14px}
 .stitle-text{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap}
 .stitle-line{flex:1;height:1px;background:var(--border)}
 
-/* ── CARD ── */
 .card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:22px 24px;transition:border-color 0.2s}
 .card:hover{border-color:var(--border2)}
 .card-head{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .card-head-dot{width:5px;height:5px;border-radius:50%;background:var(--coral);flex-shrink:0}
 
-/* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 @media(max-width:720px){.g2,.g3,.g5{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.g2,.g3,.g5,.hdr{grid-template-columns:1fr;flex-direction:column}}
 
-/* ── FIELD ── */
 .field{padding:13px 0;border-bottom:1px solid var(--border)}
 .field:last-child{border-bottom:none;padding-bottom:0}
 .field:first-child{padding-top:0}
 .fl{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .fl-label{font-size:14px;font-weight:500;color:var(--text);letter-spacing:-0.01em}
 .fl-sub{font-size:11px;color:var(--text3);margin-top:1px}
-.fl-val{font-family:var(--fm);font-size:13px;font-weight:500;color:var(--coral2);background:var(--coral-bg);border:1px solid var(--coral-border);border-radius:6px;padding:2px 9px;flex-shrink:0;min-width:72px;text-align:center}
+
+/* ── EDITABLE VALUE CHIP ── */
+.fl-val{
+  font-family:var(--fm);font-size:13px;font-weight:500;
+  color:var(--coral2);background:var(--coral-bg);
+  border:1px solid var(--coral-border);border-radius:6px;
+  padding:2px 9px;flex-shrink:0;min-width:72px;text-align:center;
+  cursor:text;position:relative;transition:border-color 0.15s,box-shadow 0.15s;
+  user-select:none;
+}
+.fl-val:hover{border-color:var(--coral2);box-shadow:0 0 0 3px rgba(232,96,60,0.12)}
+.fl-val.editing{
+  border-color:var(--coral2);box-shadow:0 0 0 3px rgba(232,96,60,0.18);
+  cursor:default;color:transparent;
+}
+.fl-val input.chip-input{
+  position:absolute;inset:0;width:100%;height:100%;
+  background:transparent;border:none;outline:none;
+  font-family:var(--fm);font-size:13px;font-weight:500;
+  color:var(--coral2);text-align:center;
+  padding:0 6px;cursor:text;border-radius:6px;
+  display:none;
+}
+.fl-val.editing input.chip-input{display:block;}
+.fl-val .chip-text{display:inline;}
+.fl-val.editing .chip-text{visibility:hidden;}
+
 input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--s4);border-radius:2px;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--text);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--border2),0 2px 8px rgba(0,0,0,0.5);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0 0 0 1px var(--coral-border),0 0 12px rgba(232,96,60,0.3)}
@@ -96,7 +113,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 select:focus,input[type=text]:focus,input[type=number]:focus{border-color:rgba(232,96,60,0.5);box-shadow:0 0 0 3px rgba(232,96,60,0.08)}
 input::placeholder{color:var(--text4)}
 
-/* ── METRICS ── */
 .metric{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.15s,transform 0.15s}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--coral),var(--warm));opacity:0;transition:opacity 0.2s}
@@ -108,7 +124,6 @@ input::placeholder{color:var(--text4)}
 .metric-val.c-red{color:var(--red)}
 .metric-sub{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:5px}
 
-/* ── BREAKDOWN TABLE ── */
 .btable{width:100%;border-collapse:collapse;font-size:13px}
 .btable thead th{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border2)}
 .btable thead th:last-child{text-align:right}
@@ -122,7 +137,6 @@ input::placeholder{color:var(--text4)}
 .btable tr.charge-row td{background:var(--green-bg);color:var(--green);font-family:var(--fm);font-size:15px;font-weight:600;border-bottom:none}
 .btable tr.profit-row td{background:var(--warm-bg);color:var(--warm);font-family:var(--fm);font-size:14px;font-weight:600;border-bottom:none}
 
-/* ── TIER CARDS (settings page) ── */
 .tier{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:24px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
 .tier:hover{transform:translateY(-2px)}
 .tier.active{border-color:rgba(232,96,60,0.4);background:linear-gradient(160deg,var(--s1) 60%,rgba(232,96,60,0.05))}
@@ -142,7 +156,6 @@ input::placeholder{color:var(--text4)}
 .tier-line span:last-child{font-family:var(--fm);font-size:12px;color:var(--text2)}
 .tier-line span.green{color:var(--green)}
 
-/* ── PLATFORM MANAGER ── */
 .plist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .pitem{display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;transition:border-color 0.15s}
 .pitem:hover{border-color:var(--border2)}
@@ -156,7 +169,6 @@ input::placeholder{color:var(--text4)}
 .fml{font-size:11px;color:var(--text3);margin-bottom:5px;font-family:var(--fm);text-transform:uppercase;letter-spacing:0.06em}
 @media(max-width:600px){.add-form{grid-template-columns:1fr}}
 
-/* ── EDITABLE RATE CHIPS (settings) ── */
 .rate-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
 .redit{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px}
 .redit-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
@@ -164,31 +176,35 @@ input::placeholder{color:var(--text4)}
 .redit input:focus{border-color:rgba(232,96,60,0.5);box-shadow:0 0 0 3px rgba(232,96,60,0.08)}
 .redit-hint{font-family:var(--fm);font-size:10px;color:var(--text4);margin-top:5px}
 
-/* ── BUTTON ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s var(--ease);border:none;white-space:nowrap;letter-spacing:-0.01em}
 .btn-primary{background:var(--coral);color:white}
 .btn-primary:hover{background:var(--coral2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,96,60,0.3)}
 .btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border2)}
 .btn-ghost:hover{background:var(--s3);color:var(--text)}
 
-/* ── SETTINGS HEADER ── */
 .settings-hdr{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:0}
 .settings-hdr h2{font-family:var(--fh);font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px}
 .settings-hdr p{font-size:13px;color:var(--text3)}
 
-/* ── INFO NOTE ── */
 .note-box{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--coral);border-radius:var(--r);padding:13px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
 
-/* ── FOOTER ── */
 .footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-family:var(--fm);font-size:11px;color:var(--text4);line-height:2}
 .footer a{color:var(--text3);text-decoration:none;transition:color 0.15s}
 .footer a:hover{color:var(--coral2)}
 
-/* ── TOAST ── */
 .toast{position:fixed;bottom:28px;right:28px;background:var(--s3);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-family:var(--fm);font-size:12px;color:var(--green);z-index:999;transform:translateY(8px);opacity:0;transition:all 0.25s var(--ease);pointer-events:none}
 .toast.show{transform:none;opacity:1}
 
-/* ── REVEAL ANIM ── */
+/* edit hint tooltip */
+.chip-hint{
+  position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+  background:var(--s3);border:1px solid var(--border2);border-radius:5px;
+  font-family:var(--fm);font-size:9px;color:var(--text3);
+  padding:2px 7px;white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity 0.15s;
+}
+.fl-val:hover .chip-hint{opacity:1;}
+
 .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.45s var(--ease),transform 0.45s var(--ease)}
 .reveal.visible{opacity:1;transform:none}
 
@@ -197,7 +213,6 @@ input::placeholder{color:var(--text4)}
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div class="navbar-inner">
     <div class="nav-brand">AI <span>Receptionist</span> Calculator</div>
@@ -208,11 +223,9 @@ input::placeholder{color:var(--text4)}
   </div>
 </nav>
 
-<!-- ══════════════════════════════════════ MAIN PAGE ══════════════════════════════════════ -->
 <div class="page active" id="page-main">
 <div class="wrap">
 
-  <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-left">
       <div class="hdr-eyebrow">Real Estate · AI Automation · 2026</div>
@@ -228,51 +241,97 @@ input::placeholder{color:var(--text4)}
     </div>
   </div>
 
-  <!-- CONFIGURE -->
   <div class="stitle reveal"><span class="stitle-text">Configure</span><div class="stitle-line"></div></div>
   <div class="g2 reveal">
     <div class="card">
       <div class="card-head"><span class="card-head-dot"></span>Call Volume & Duration</div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Total calls / month</div><div class="fl-sub">Outbound + inbound combined</div></div><div class="fl-val" id="lv-calls">500</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Total calls / month</div><div class="fl-sub">Outbound + inbound combined</div></div>
+          <div class="fl-val" id="lv-calls" onclick="startEdit(this,'sl-calls','int')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">500</span>
+            <input class="chip-input" type="number" min="1" max="999999" step="1">
+          </div>
+        </div>
         <input type="range" id="sl-calls" min="50" max="50000" step="50" value="500">
       </div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Avg call duration</div><div class="fl-sub">Minutes per connected call</div></div><div class="fl-val" id="lv-dur">3.0 min</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Avg call duration</div><div class="fl-sub">Minutes per connected call</div></div>
+          <div class="fl-val" id="lv-dur" onclick="startEdit(this,'sl-dur','float1')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">3.0 min</span>
+            <input class="chip-input" type="number" min="0.5" max="60" step="0.5">
+          </div>
+        </div>
         <input type="range" id="sl-dur" min="1" max="15" step="0.5" value="3">
       </div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Outbound % (to mobiles)</div><div class="fl-sub">Calling leads on mobile numbers</div></div><div class="fl-val" id="lv-ob">70%</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Outbound % (to mobiles)</div><div class="fl-sub">Calling leads on mobile numbers</div></div>
+          <div class="fl-val" id="lv-ob" onclick="startEdit(this,'sl-ob','pct')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">70%</span>
+            <input class="chip-input" type="number" min="0" max="100" step="1">
+          </div>
+        </div>
         <input type="range" id="sl-ob" min="0" max="100" step="5" value="70">
       </div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Unanswered call rate</div><div class="fl-sub">Attempts with no pickup (billed anyway)</div></div><div class="fl-val" id="lv-miss">30%</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Unanswered call rate</div><div class="fl-sub">Attempts with no pickup (billed anyway)</div></div>
+          <div class="fl-val" id="lv-miss" onclick="startEdit(this,'sl-miss','pct')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">30%</span>
+            <input class="chip-input" type="number" min="0" max="100" step="1">
+          </div>
+        </div>
         <input type="range" id="sl-miss" min="5" max="65" step="5" value="30">
       </div>
     </div>
 
     <div class="card">
       <div class="card-head"><span class="card-head-dot"></span>Twilio & Platform</div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Twilio numbers rented</div><div class="fl-sub">Dedicated Indian numbers · ₹200/no./mo</div></div><div class="fl-val" id="lv-nums">2</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Twilio numbers rented</div><div class="fl-sub">Dedicated Indian numbers · ₹200/no./mo</div></div>
+          <div class="fl-val" id="lv-nums" onclick="startEdit(this,'sl-nums','int')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">2</span>
+            <input class="chip-input" type="number" min="1" max="999" step="1">
+          </div>
+        </div>
         <input type="range" id="sl-nums" min="1" max="20" step="1" value="2">
       </div>
+
       <div class="field">
         <div class="fl" style="margin-bottom:8px"><div><div class="fl-label">AI Platform</div><div class="fl-sub">Select your voice AI provider</div></div></div>
         <select id="sel-plat"></select>
       </div>
+
       <div class="field">
-        <div class="fl"><div><div class="fl-label">Your target margin</div><div class="fl-sub">Profit over total cost (min 10%)</div></div><div class="fl-val" id="lv-margin">40%</div></div>
+        <div class="fl">
+          <div><div class="fl-label">Your target margin</div><div class="fl-sub">Profit over total cost (min 10%)</div></div>
+          <div class="fl-val" id="lv-margin" onclick="startEdit(this,'sl-margin','pct')" title="Click to type a value">
+            <span class="chip-hint">click to edit</span>
+            <span class="chip-text">40%</span>
+            <input class="chip-input" type="number" min="10" max="90" step="1">
+          </div>
+        </div>
         <input type="range" id="sl-margin" min="10" max="70" step="5" value="40">
       </div>
     </div>
   </div>
 
-  <!-- METRICS -->
   <div class="stitle reveal"><span class="stitle-text">Monthly Summary</span><div class="stitle-line"></div></div>
   <div class="g5 reveal" id="metrics" style="grid-template-columns:repeat(auto-fit,minmax(155px,1fr))"></div>
 
-  <!-- BREAKDOWN -->
   <div class="stitle reveal"><span class="stitle-text">Full Cost Breakdown</span><div class="stitle-line"></div></div>
   <div class="card reveal" style="padding:0;overflow:hidden">
     <table class="btable" id="btable"></table>
@@ -284,9 +343,8 @@ input::placeholder{color:var(--text4)}
   </footer>
 
 </div>
-</div><!-- end page-main -->
+</div>
 
-<!-- ══════════════════════════════════════ SETTINGS PAGE ══════════════════════════════════════ -->
 <div class="page" id="page-settings">
 <div class="wrap">
 
@@ -295,12 +353,10 @@ input::placeholder{color:var(--text4)}
     <p>Edit Twilio rates, manage AI platforms, and view retainer tier pricing — all changes reflect instantly on the calculator.</p>
   </div>
 
-  <!-- TWILIO RATES EDITOR -->
   <div class="stitle reveal"><span class="stitle-text">Twilio India Rates</span><div class="stitle-line"></div></div>
   <div class="note-box reveal">Update the rates below whenever Twilio changes pricing — the calculator on the main page will recalculate instantly.</div>
   <div class="rate-edit-grid reveal" id="rate-editor"></div>
 
-  <!-- PLATFORM MANAGER -->
   <div class="stitle reveal"><span class="stitle-text">AI Platform Manager</span><div class="stitle-line"></div></div>
   <div class="card reveal">
     <div class="card-head"><span class="card-head-dot"></span>Platform Registry</div>
@@ -313,7 +369,6 @@ input::placeholder{color:var(--text4)}
     <p style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:12px;line-height:1.6">Custom platforms appear immediately in the main calculator dropdown.</p>
   </div>
 
-  <!-- RETAINER TIERS -->
   <div class="stitle reveal"><span class="stitle-text">Retainer Tiers — Based on Current Settings</span><div class="stitle-line"></div></div>
   <div class="note-box reveal">These tiers auto-calculate using your current platform, rates, and margin from the calculator. Use as a reference when quoting clients.</div>
   <div class="g3 reveal" id="tiers"></div>
@@ -323,23 +378,20 @@ input::placeholder{color:var(--text4)}
   </footer>
 
 </div>
-</div><!-- end page-settings -->
+</div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────────────────────
 const USD = 84;
 const MAINT = 3000, CRM = 1500;
 
-// Twilio rates — editable
 let rates = {
-  outMob:  1.20,   // outbound to mobile ₹/min
-  outLand: 0.65,   // outbound to landline ₹/min (used as blended for non-mobile)
-  inbound: 0.35,   // inbound ₹/min
-  numRent: 200,    // number rental ₹/mo
-  failAtt: 1.26    // failed attempt ₹/call
+  outMob:  1.20,
+  outLand: 0.65,
+  inbound: 0.35,
+  numRent: 200,
+  failAtt: 1.26
 };
 
 let platforms = [
@@ -349,13 +401,100 @@ let platforms = [
 ];
 let selId = 'retell';
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const rv = id => parseFloat($(id).value);
 const ri = n => Math.round(n);
 const fmt = n => '₹' + ri(n).toLocaleString('en-IN');
 const fmtN = n => n.toLocaleString('en-IN');
 const getP = () => platforms.find(p => p.id === selId) || platforms[0];
+
+// ── EDITABLE CHIPS ────────────────────────────────────────────────────────────
+// mode: 'int' | 'float1' | 'pct'
+// Each chip wraps: .chip-text (display) + .chip-input (hidden number input)
+// Clicking chip shows input pre-filled with raw numeric value.
+// On blur/Enter: clamp to slider range → sync slider → recompute.
+
+const chipMeta = {
+  'lv-calls':  { slider:'sl-calls',  mode:'int',    min:1,    max:999999, suffix:'' },
+  'lv-dur':    { slider:'sl-dur',    mode:'float1', min:0.5,  max:60,     suffix:' min' },
+  'lv-ob':     { slider:'sl-ob',     mode:'pct',    min:0,    max:100,    suffix:'%' },
+  'lv-miss':   { slider:'sl-miss',   mode:'pct',    min:0,    max:100,    suffix:'%' },
+  'lv-nums':   { slider:'sl-nums',   mode:'int',    min:1,    max:999,    suffix:'' },
+  'lv-margin': { slider:'sl-margin', mode:'pct',    min:10,   max:90,     suffix:'%' },
+};
+
+function startEdit(chip, sliderId, mode) {
+  if (chip.classList.contains('editing')) return;
+  const meta = chipMeta[chip.id];
+  const inp = chip.querySelector('.chip-input');
+  // pre-fill with current raw value from slider
+  inp.value = rv(meta.slider);
+  chip.classList.add('editing');
+  inp.style.display = 'block';
+  inp.focus();
+  inp.select();
+
+  function commit() {
+    chip.classList.remove('editing');
+    inp.style.display = 'none';
+    let val = parseFloat(inp.value);
+    if (isNaN(val)) { compute(); return; }
+    // clamp to slider bounds (use chip meta for wider range, slider for its own range)
+    const sliderEl = $(meta.slider);
+    const sMin = parseFloat(sliderEl.min);
+    const sMax = parseFloat(sliderEl.max);
+    // allow values beyond slider range — we clamp to chip meta range
+    val = Math.max(meta.min, Math.min(meta.max, val));
+    // update slider as close as possible (clamped to its own range)
+    sliderEl.value = Math.max(sMin, Math.min(sMax, val));
+    // force compute with the potentially out-of-slider-range value via a data attr
+    chip.dataset.override = val;
+    compute();
+    delete chip.dataset.override;
+    showToast('Value updated ✓');
+  }
+
+  inp.addEventListener('keydown', function handler(e) {
+    if (e.key === 'Enter') { inp.removeEventListener('keydown', handler); commit(); }
+    if (e.key === 'Escape') {
+      inp.removeEventListener('keydown', handler);
+      chip.classList.remove('editing');
+      inp.style.display = 'none';
+      compute();
+    }
+  }, {once: false});
+
+  inp.addEventListener('blur', function handler() {
+    inp.removeEventListener('blur', handler);
+    // small delay so Enter doesn't double-fire
+    setTimeout(commit, 80);
+  }, {once: true});
+}
+
+// Override rv() to respect chip direct-typed values
+function getVal(sliderId) {
+  // find the chip whose slider matches
+  for (const [chipId, meta] of Object.entries(chipMeta)) {
+    if (meta.slider === sliderId) {
+      const chip = $(chipId);
+      if (chip && chip.dataset.override !== undefined) {
+        return parseFloat(chip.dataset.override);
+      }
+    }
+  }
+  return rv(sliderId);
+}
+
+// Update chip display text after slider move
+function updateChipText(chipId, val) {
+  const meta = chipMeta[chipId];
+  const chip = $(chipId);
+  if (!chip || chip.classList.contains('editing')) return;
+  const textEl = chip.querySelector('.chip-text');
+  if (meta.mode === 'int')    textEl.textContent = ri(val).toLocaleString('en-IN') + meta.suffix;
+  if (meta.mode === 'float1') textEl.textContent = parseFloat(val).toFixed(1) + meta.suffix;
+  if (meta.mode === 'pct')    textEl.textContent = ri(val) + meta.suffix;
+}
 
 // ── PAGE NAVIGATION ───────────────────────────────────────────────────────────
 function showPage(id, btn) {
@@ -367,7 +506,6 @@ function showPage(id, btn) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = $('toast');
   t.textContent = msg;
@@ -375,7 +513,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── RATE DISPLAY (header panel on main page) ──────────────────────────────────
 function renderRateDisplay() {
   const items = [
     ['Outbound mobile', '₹' + rates.outMob.toFixed(2) + '/min'],
@@ -389,7 +526,6 @@ function renderRateDisplay() {
   ).join('');
 }
 
-// ── RATE EDITOR (settings page) ───────────────────────────────────────────────
 function renderRateEditor() {
   const fields = [
     {key:'outMob',  label:'Outbound → Mobile (₹/min)',    hint:'Most leads on mobile'},
@@ -416,7 +552,6 @@ function updateRate(key, val) {
   }
 }
 
-// ── PLATFORM SELECT ───────────────────────────────────────────────────────────
 function renderPlatformSelect() {
   $('sel-plat').innerHTML = platforms.map(p =>
     `<option value="${p.id}" ${p.id === selId ? 'selected' : ''}>${p.name} — $${p.usd.toFixed(3)}/min (₹${(p.usd*USD).toFixed(2)}/min)</option>`
@@ -424,7 +559,6 @@ function renderPlatformSelect() {
   $('sel-plat').onchange = () => { selId = $('sel-plat').value; compute(); };
 }
 
-// ── PLATFORM LIST (settings) ──────────────────────────────────────────────────
 function renderPlatformList() {
   $('plist').innerHTML = platforms.map(p => `
     <div class="pitem">
@@ -457,14 +591,13 @@ function removePlat(id) {
   compute();
 }
 
-// ── TIERS (settings page) ─────────────────────────────────────────────────────
 function renderTiers() {
-  const dur = rv('sl-dur');
-  const obPct = rv('sl-ob') / 100;
-  const misPct = rv('sl-miss') / 100;
-  const nums = rv('sl-nums');
-  const margin = rv('sl-margin') / 100;
-  const plat = getP();
+  const dur    = getVal('sl-dur');
+  const obPct  = getVal('sl-ob') / 100;
+  const misPct = getVal('sl-miss') / 100;
+  const nums   = getVal('sl-nums');
+  const margin = getVal('sl-margin') / 100;
+  const plat   = getP();
 
   function tierCalc(tc) {
     const ta = ri(tc / (1 - misPct)), fa = ta - tc;
@@ -478,7 +611,7 @@ function renderTiers() {
   }
 
   const tcs = [{name:'Starter',calls:300},{name:'Growth',calls:800,pop:true},{name:'Scale',calls:2000}];
-  $('tiers').innerHTML = tcs.map((t, i) => {
+  $('tiers').innerHTML = tcs.map((t) => {
     const d = tierCalc(t.calls);
     return `<div class="tier">
       <div class="tier-glow"></div>
@@ -498,20 +631,21 @@ function renderTiers() {
 
 // ── MAIN COMPUTE ──────────────────────────────────────────────────────────────
 function compute() {
-  const calls   = rv('sl-calls');
-  const dur     = rv('sl-dur');
-  const obPct   = rv('sl-ob') / 100;
-  const misPct  = rv('sl-miss') / 100;
-  const nums    = rv('sl-nums');
-  const margin  = rv('sl-margin') / 100;
-  const plat    = getP();
+  const calls  = getVal('sl-calls');
+  const dur    = getVal('sl-dur');
+  const obPct  = getVal('sl-ob') / 100;
+  const misPct = getVal('sl-miss') / 100;
+  const nums   = getVal('sl-nums');
+  const margin = getVal('sl-margin') / 100;
+  const plat   = getP();
 
-  $('lv-calls').textContent  = ri(calls).toLocaleString('en-IN');
-  $('lv-dur').textContent    = dur.toFixed(1) + ' min';
-  $('lv-ob').textContent     = ri(obPct * 100) + '%';
-  $('lv-miss').textContent   = ri(misPct * 100) + '%';
-  $('lv-nums').textContent   = ri(nums);
-  $('lv-margin').textContent = ri(margin * 100) + '%';
+  // Update chip display text
+  updateChipText('lv-calls',  calls);
+  updateChipText('lv-dur',    dur);
+  updateChipText('lv-ob',     obPct * 100);
+  updateChipText('lv-miss',   misPct * 100);
+  updateChipText('lv-nums',   nums);
+  updateChipText('lv-margin', margin * 100);
 
   const connected  = calls;
   const totalAtt   = ri(connected / (1 - misPct));
@@ -535,7 +669,6 @@ function compute() {
   const perCallCost   = total / connected;
   const perCallCharge = retainer / connected;
 
-  // metrics
   $('metrics').innerHTML = [
     {icon:'📞', label:'Connected Calls', val:fmtN(ri(connected)), sub:fmtN(ri(totalAtt))+' total attempts', cls:''},
     {icon:'⏱',  label:'Total Minutes',  val:fmtN(ri(totM)),       sub:ri(obM)+' out + '+ri(ibM)+' in',     cls:''},
@@ -544,7 +677,6 @@ function compute() {
     {icon:'📈', label:'Your Profit',    val:fmt(profit),           sub:ri(margin*100)+'% margin',           cls:'c-warm'},
   ].map(m => `<div class="metric"><div class="metric-accent"></div><div class="metric-label">${m.icon} ${m.label}</div><div class="metric-val ${m.cls}">${m.val}</div><div class="metric-sub">${m.sub}</div></div>`).join('');
 
-  // breakdown table
   const blandRow = bland_fee > 0
     ? `<tr><td><span class="td-main">Bland AI Plan Fee</span><span class="td-note">$299/mo subscription · required for &gt;100 calls/day concurrency</span></td><td style="color:var(--text3);font-size:12px">Fixed · $299 × ₹${USD}</td><td>${fmt(bland_fee)}</td></tr>`
     : '';
@@ -571,12 +703,14 @@ function compute() {
   <tr class="profit-row"><td colspan="2">🟡 Your Monthly Profit</td><td>${fmt(profit)}</td></tr>
   </tbody>`;
 
-  // also refresh tiers if settings page is visible
   if ($('page-settings').classList.contains('active')) renderTiers();
 }
 
-// ── EVENTS ────────────────────────────────────────────────────────────────────
-['sl-calls','sl-dur','sl-ob','sl-miss','sl-nums','sl-margin'].forEach(id => $(id).addEventListener('input', compute));
+// ── SLIDER EVENTS ─────────────────────────────────────────────────────────────
+['sl-calls','sl-dur','sl-ob','sl-miss','sl-nums','sl-margin'].forEach(id => {
+  $(id).addEventListener('input', compute);
+});
+
 ['inp-name','inp-rate'].forEach(id => {
   $(id).addEventListener('input', () => $(id).style.borderColor = '');
   $(id).addEventListener('keydown', e => { if (e.key === 'Enter') addPlatform(); });
