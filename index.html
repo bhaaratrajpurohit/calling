@@ -3,112 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Calling Receptionist — Cost & Retainer Calculator</title>
+<title>AI Calling Receptionist — Cost Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Geist+Mono:wght@300;400;500;600&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:       #0e0e0e;
-  --s1:       #161616;
-  --s2:       #1c1c1c;
-  --s3:       #242424;
-  --s4:       #2c2c2c;
-  --border:   rgba(255,255,255,0.06);
-  --border2:  rgba(255,255,255,0.1);
-  --border3:  rgba(255,255,255,0.16);
-  --coral:    #e8603c;
-  --coral2:   #f07d5a;
-  --coral-bg: rgba(232,96,60,0.1);
-  --coral-border: rgba(232,96,60,0.25);
-  --warm:     #f5a623;
-  --warm-bg:  rgba(245,166,35,0.08);
-  --green:    #34d399;
-  --green-bg: rgba(52,211,153,0.08);
-  --red:      #fb7185;
-  --red-bg:   rgba(251,113,133,0.09);
-  --blue:     #60a5fa;
-  --text:     #f2f2f2;
-  --text2:    #a0a0a0;
-  --text3:    #606060;
-  --text4:    #3a3a3a;
-  --fh: 'Cabinet Grotesk', sans-serif;
-  --fb: 'Instrument Sans', sans-serif;
-  --fm: 'Geist Mono', monospace;
-  --r:  10px;
-  --r2: 14px;
-  --ease: cubic-bezier(0.4,0,0.2,1);
+:root{
+  --bg:#0e0e0e;--s1:#161616;--s2:#1c1c1c;--s3:#242424;--s4:#2c2c2c;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.18);
+  --coral:#e8603c;--coral2:#f07d5a;--coral-bg:rgba(232,96,60,0.1);--coral-border:rgba(232,96,60,0.25);
+  --warm:#f5a623;--warm-bg:rgba(245,166,35,0.08);
+  --green:#34d399;--green-bg:rgba(52,211,153,0.08);
+  --red:#fb7185;--red-bg:rgba(251,113,133,0.09);
+  --blue:#60a5fa;
+  --text:#f2f2f2;--text2:#a0a0a0;--text3:#606060;--text4:#3a3a3a;
+  --fh:'Cabinet Grotesk',sans-serif;--fb:'Instrument Sans',sans-serif;--fm:'Geist Mono',monospace;
+  --r:10px;--r2:14px;--ease:cubic-bezier(0.4,0,0.2,1);
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(232,96,60,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
 
-/* ── SUBTLE VIGNETTE ── */
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,96,60,0.04) 0%, transparent 60%);pointer-events:none;z-index:0}
+/* ── PAGE SYSTEM ── */
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block}
+.wrap{max-width:980px;margin:0 auto;padding:0 28px 100px}
 
-.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:0 28px 100px}
+/* ── NAV BAR ── */
+.navbar{position:sticky;top:0;z-index:100;background:rgba(14,14,14,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px}
+.navbar-inner{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:16px}
+.nav-brand{font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:8px}
+.nav-brand span{color:var(--coral)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{background:none;border:none;font-family:var(--fb);font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;padding:6px 14px;border-radius:7px;transition:all 0.15s var(--ease)}
+.nav-tab:hover{color:var(--text2);background:var(--s2)}
+.nav-tab.active{color:var(--text);background:var(--s2);border:1px solid var(--border2)}
 
 /* ── HEADER ── */
-.hdr{padding:56px 0 48px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;border-bottom:1px solid var(--border)}
+.hdr{padding:40px 0 32px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;border-bottom:1px solid var(--border)}
 .hdr-left{flex:1}
-.hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px}
+.hdr-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px}
 .hdr-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--coral)}
-h1{font-family:var(--fh);font-size:clamp(30px,4.5vw,52px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;color:var(--text)}
+h1{font-family:var(--fh);font-size:clamp(28px,4vw,46px);font-weight:900;line-height:1.1;letter-spacing:-0.03em}
 h1 em{font-style:normal;color:var(--coral)}
-.hdr-sub{font-size:14px;color:var(--text3);margin-top:12px;max-width:460px;line-height:1.7;font-weight:400}
-.hdr-badge{background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 18px;font-family:var(--fm);font-size:11px;color:var(--text2);line-height:1.8;flex-shrink:0;min-width:190px}
-.hdr-badge-label{color:var(--text3);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
-.live-dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:5px;animation:blink 2s infinite}
+.hdr-sub{font-size:13px;color:var(--text3);margin-top:10px;max-width:420px;line-height:1.7}
+
+/* ── RATE PANEL (header right) ── */
+.rate-panel{background:var(--s1);border:1px solid var(--border2);border-radius:var(--r2);padding:16px 18px;flex-shrink:0;min-width:210px}
+.rate-panel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rate-panel-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+.live-dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:5px;animation:blink 2s infinite;vertical-align:middle}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.35}}
+.rate-edit-btn{background:var(--s3);border:1px solid var(--border2);border-radius:6px;color:var(--text3);font-family:var(--fm);font-size:10px;cursor:pointer;padding:3px 9px;transition:all 0.15s}
+.rate-edit-btn:hover{color:var(--coral2);border-color:var(--coral-border)}
+.rate-rows{}
+.rate-row-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.rate-row-item:last-child{border-bottom:none}
+.rate-row-lbl{font-family:var(--fm);font-size:10px;color:var(--text3)}
+.rate-row-val{font-family:var(--fm);font-size:12px;font-weight:500;color:var(--text2)}
 
 /* ── SECTION TITLE ── */
-.stitle{display:flex;align-items:center;gap:12px;margin:36px 0 14px}
+.stitle{display:flex;align-items:center;gap:12px;margin:32px 0 14px}
 .stitle-text{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap}
 .stitle-line{flex:1;height:1px;background:var(--border)}
-.stitle-num{font-family:var(--fm);font-size:10px;color:var(--text4)}
 
-/* ── CARDS ── */
-.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:22px 24px;transition:border-color 0.2s var(--ease)}
+/* ── CARD ── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:22px 24px;transition:border-color 0.2s}
 .card:hover{border-color:var(--border2)}
 .card-head{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .card-head-dot{width:5px;height:5px;border-radius:50%;background:var(--coral);flex-shrink:0}
 
-/* ── GRID ── */
+/* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 @media(max-width:720px){.g2,.g3,.g5{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.g2,.g3,.g5{grid-template-columns:1fr}}
+@media(max-width:480px){.g2,.g3,.g5,.hdr{grid-template-columns:1fr;flex-direction:column}}
 
-/* ── FIELDS ── */
-.field{padding:14px 0;border-bottom:1px solid var(--border)}
+/* ── FIELD ── */
+.field{padding:13px 0;border-bottom:1px solid var(--border)}
 .field:last-child{border-bottom:none;padding-bottom:0}
 .field:first-child{padding-top:0}
 .fl{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .fl-label{font-size:14px;font-weight:500;color:var(--text);letter-spacing:-0.01em}
 .fl-sub{font-size:11px;color:var(--text3);margin-top:1px}
-.fl-val{font-family:var(--fm);font-size:13px;font-weight:500;color:var(--coral2);background:var(--coral-bg);border:1px solid var(--coral-border);border-radius:6px;padding:2px 9px;flex-shrink:0;min-width:68px;text-align:center}
-
-/* Range */
+.fl-val{font-family:var(--fm);font-size:13px;font-weight:500;color:var(--coral2);background:var(--coral-bg);border:1px solid var(--coral-border);border-radius:6px;padding:2px 9px;flex-shrink:0;min-width:72px;text-align:center}
 input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--s4);border-radius:2px;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--text);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--border2),0 2px 8px rgba(0,0,0,0.5);cursor:pointer;transition:transform 0.15s var(--ease),box-shadow 0.15s}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--text);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--border2),0 2px 8px rgba(0,0,0,0.5);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0 0 0 1px var(--coral-border),0 0 12px rgba(232,96,60,0.3)}
-
-/* Select */
 select,input[type=text],input[type=number]{width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--fb);font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;-webkit-appearance:none;appearance:none}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23606060' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
 select:focus,input[type=text]:focus,input[type=number]:focus{border-color:rgba(232,96,60,0.5);box-shadow:0 0 0 3px rgba(232,96,60,0.08)}
 input::placeholder{color:var(--text4)}
 
-/* ── RATE CHIPS ── */
-.rate-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
-.rchip{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;transition:border-color 0.15s}
-.rchip:hover{border-color:var(--border2)}
-.rchip-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px}
-.rchip-val{font-family:var(--fm);font-size:15px;font-weight:500;color:var(--text)}
-.rchip-val span{font-size:11px;color:var(--text3)}
-
-/* ── METRIC CARDS ── */
+/* ── METRICS ── */
 .metric{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.15s,transform 0.15s}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--coral),var(--warm));opacity:0;transition:opacity 0.2s}
@@ -116,7 +104,6 @@ input::placeholder{color:var(--text4)}
 .metric-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
 .metric-val{font-family:var(--fh);font-size:24px;font-weight:800;letter-spacing:-0.02em;line-height:1.1}
 .metric-val.c-green{color:var(--green)}
-.metric-val.c-coral{color:var(--coral2)}
 .metric-val.c-warm{color:var(--warm)}
 .metric-val.c-red{color:var(--red)}
 .metric-sub{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:5px}
@@ -125,17 +112,17 @@ input::placeholder{color:var(--text4)}
 .btable{width:100%;border-collapse:collapse;font-size:13px}
 .btable thead th{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border2)}
 .btable thead th:last-child{text-align:right}
-.btable td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+.btable td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
 .btable td:last-child{text-align:right;font-family:var(--fm);font-size:13px;white-space:nowrap}
 .td-main{color:var(--text);font-weight:500;display:block;line-height:1.3}
 .td-note{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:2px;display:block}
 .btable tr.sec-head td{background:var(--s2);font-family:var(--fm);font-size:10px;color:var(--coral2);text-transform:uppercase;letter-spacing:0.1em;padding:7px 16px;border-bottom:1px solid var(--border)}
 .btable tr.sub-row td{background:var(--s2);font-family:var(--fm);font-size:12px;font-weight:500;color:var(--text2);border-bottom:1px solid var(--border2)}
-.btable tr.total-row td{background:rgba(251,113,133,0.06);color:var(--red);font-family:var(--fm);font-size:14px;font-weight:600;border-top:1px solid rgba(251,113,133,0.2);border-bottom:none}
-.btable tr.charge-row td{background:rgba(52,211,153,0.06);color:var(--green);font-family:var(--fm);font-size:15px;font-weight:600;border-bottom:none}
-.btable tr.profit-row td{background:rgba(245,166,35,0.06);color:var(--warm);font-family:var(--fm);font-size:14px;font-weight:600;border-bottom:none}
+.btable tr.total-row td{background:var(--red-bg);color:var(--red);font-family:var(--fm);font-size:14px;font-weight:600;border-top:1px solid rgba(251,113,133,0.15);border-bottom:none}
+.btable tr.charge-row td{background:var(--green-bg);color:var(--green);font-family:var(--fm);font-size:15px;font-weight:600;border-bottom:none}
+.btable tr.profit-row td{background:var(--warm-bg);color:var(--warm);font-family:var(--fm);font-size:14px;font-weight:600;border-bottom:none}
 
-/* ── TIER CARDS ── */
+/* ── TIER CARDS (settings page) ── */
 .tier{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:24px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s}
 .tier:hover{transform:translateY(-2px)}
 .tier.active{border-color:rgba(232,96,60,0.4);background:linear-gradient(160deg,var(--s1) 60%,rgba(232,96,60,0.05))}
@@ -147,16 +134,16 @@ input::placeholder{color:var(--text4)}
 .tier-badge.tag-empty{height:24px;display:block}
 .tier-name{font-family:var(--fh);font-size:20px;font-weight:800;letter-spacing:-0.02em;margin-bottom:3px}
 .tier-calls{font-family:var(--fm);font-size:11px;color:var(--text3);margin-bottom:18px}
-.tier-price{font-family:var(--fh);font-size:32px;font-weight:900;letter-spacing:-0.03em;color:var(--coral2);line-height:1}
-.tier-mo{font-size:12px;color:var(--text3);margin-bottom:18px;font-family:var(--fm)}
-.tier-sep{height:1px;background:var(--border);margin:14px 0}
-.tier-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
-.tier-row-label{font-size:12px;color:var(--text3)}
-.tier-row-val{font-family:var(--fm);font-size:12px;color:var(--text2)}
-.tier-row-val.green{color:var(--green)}
+.tier-price{font-family:var(--fh);font-size:30px;font-weight:900;letter-spacing:-0.03em;color:var(--coral2);line-height:1}
+.tier-mo{font-size:12px;color:var(--text3);margin-bottom:16px;font-family:var(--fm)}
+.tier-sep{height:1px;background:var(--border);margin:12px 0}
+.tier-line{display:flex;justify-content:space-between;padding:3px 0}
+.tier-line span:first-child{font-size:12px;color:var(--text3)}
+.tier-line span:last-child{font-family:var(--fm);font-size:12px;color:var(--text2)}
+.tier-line span.green{color:var(--green)}
 
 /* ── PLATFORM MANAGER ── */
-.plist{display:flex;flex-direction:column;gap:8px}
+.plist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .pitem{display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;transition:border-color 0.15s}
 .pitem:hover{border-color:var(--border2)}
 .pitem-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -165,363 +152,446 @@ input::placeholder{color:var(--text4)}
 .pitem-rate{font-family:var(--fm);font-size:12px;color:var(--coral2);background:var(--coral-bg);border:1px solid var(--coral-border);padding:2px 8px;border-radius:5px}
 .pitem-del{background:none;border:none;color:var(--text4);cursor:pointer;font-size:16px;padding:0 2px;line-height:1;transition:color 0.15s;margin-left:2px}
 .pitem-del:hover{color:var(--red)}
-.add-form{display:grid;grid-template-columns:1fr 160px auto;gap:10px;margin-top:14px;align-items:end}
-.field-mini-label{font-size:11px;color:var(--text3);margin-bottom:5px;font-family:var(--fm);text-transform:uppercase;letter-spacing:0.06em}
+.add-form{display:grid;grid-template-columns:1fr 160px auto;gap:10px;align-items:end}
+.fml{font-size:11px;color:var(--text3);margin-bottom:5px;font-family:var(--fm);text-transform:uppercase;letter-spacing:0.06em}
 @media(max-width:600px){.add-form{grid-template-columns:1fr}}
+
+/* ── EDITABLE RATE CHIPS (settings) ── */
+.rate-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.redit{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.redit-label{font-family:var(--fm);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.redit input{background:var(--s2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--fm);font-size:15px;font-weight:500;padding:8px 10px;width:100%;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.redit input:focus{border-color:rgba(232,96,60,0.5);box-shadow:0 0 0 3px rgba(232,96,60,0.08)}
+.redit-hint{font-family:var(--fm);font-size:10px;color:var(--text4);margin-top:5px}
 
 /* ── BUTTON ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s var(--ease);border:none;white-space:nowrap;letter-spacing:-0.01em}
 .btn-primary{background:var(--coral);color:white}
 .btn-primary:hover{background:var(--coral2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,96,60,0.3)}
-.btn-primary:active{transform:none}
+.btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--s3);color:var(--text)}
 
-/* ── BUFFER BOX ── */
-.buffer-box{background:var(--s1);border:1px solid rgba(245,166,35,0.2);border-left:3px solid var(--warm);border-radius:var(--r2);padding:22px 24px}
-.buffer-title{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--warm);margin-bottom:10px;letter-spacing:-0.01em}
-.buffer-body{font-size:13.5px;color:var(--text2);line-height:1.75;margin-bottom:12px}
-.buffer-body:last-child{margin-bottom:0}
-.buffer-list{list-style:none;margin:12px 0}
-.buffer-list li{position:relative;padding:6px 0 6px 18px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.5}
-.buffer-list li:last-child{border-bottom:none}
-.buffer-list li::before{content:'→';position:absolute;left:0;color:var(--warm);font-family:var(--fm);font-size:11px;top:8px}
-.buffer-list li strong{color:var(--text);font-weight:500}
-.buffer-alert{background:var(--warm-bg);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--warm);font-family:var(--fm);margin-top:14px;line-height:1.5}
+/* ── SETTINGS HEADER ── */
+.settings-hdr{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:0}
+.settings-hdr h2{font-family:var(--fh);font-size:28px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px}
+.settings-hdr p{font-size:13px;color:var(--text3)}
 
-/* ── SETUP BOX ── */
-.setup-box{background:var(--s1);border:1px solid rgba(232,96,60,0.2);border-radius:var(--r2);padding:22px 24px;display:flex;gap:20px;align-items:flex-start}
-.setup-icon{font-size:26px;flex-shrink:0;line-height:1}
-.setup-title{font-family:var(--fh);font-size:15px;font-weight:800;letter-spacing:-0.01em;margin-bottom:6px}
-.setup-body{font-size:13px;color:var(--text2);line-height:1.6}
-.setup-price{font-family:var(--fm);font-size:22px;color:var(--coral2);font-weight:500;display:inline-block;margin-top:8px}
-.tag-pill{display:inline-block;font-family:var(--fm);font-size:10px;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle}
-.tag-pill.green{background:var(--green-bg);color:var(--green);border:1px solid rgba(52,211,153,0.2)}
-.tag-pill.coral{background:var(--coral-bg);color:var(--coral2);border:1px solid var(--coral-border)}
+/* ── INFO NOTE ── */
+.note-box{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--coral);border-radius:var(--r);padding:13px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
 
 /* ── FOOTER ── */
-.footer{margin-top:64px;padding-top:28px;border-top:1px solid var(--border);text-align:center;font-family:var(--fm);font-size:11px;color:var(--text4);line-height:2}
+.footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-family:var(--fm);font-size:11px;color:var(--text4);line-height:2}
 .footer a{color:var(--text3);text-decoration:none;transition:color 0.15s}
 .footer a:hover{color:var(--coral2)}
 
-/* ── ANIMATIONS ── */
-.fade-up{opacity:0;transform:translateY(12px);animation:fu 0.45s var(--ease) forwards}
-@keyframes fu{to{opacity:1;transform:none}}
-.fade-up:nth-child(1){animation-delay:0.04s}
-.fade-up:nth-child(2){animation-delay:0.09s}
-.fade-up:nth-child(3){animation-delay:0.14s}
-.fade-up:nth-child(4){animation-delay:0.19s}
-.fade-up:nth-child(5){animation-delay:0.24s}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--s3);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-family:var(--fm);font-size:12px;color:var(--green);z-index:999;transform:translateY(8px);opacity:0;transition:all 0.25s var(--ease);pointer-events:none}
+.toast.show{transform:none;opacity:1}
 
-/* scroll-reveal */
-.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.5s var(--ease),transform 0.5s var(--ease)}
+/* ── REVEAL ANIM ── */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity 0.45s var(--ease),transform 0.45s var(--ease)}
 .reveal.visible{opacity:1;transform:none}
 
-/* ── INFO TAG ── */
-.itag{font-family:var(--fm);font-size:10px;padding:1px 6px;border-radius:4px;margin-left:7px;vertical-align:middle}
-.itag.blue{background:rgba(96,165,250,0.08);color:var(--blue);border:1px solid rgba(96,165,250,0.15)}
-
-@media(max-width:640px){
-  .wrap{padding:0 16px 70px}
-  .hdr{flex-direction:column;padding:32px 0 28px}
-  .hdr-badge{min-width:auto;width:100%}
-  h1{font-size:30px}
-  .btable td,.btable th{padding:9px 10px}
-}
+@media(max-width:640px){.wrap{padding:0 16px 70px}.hdr{flex-direction:column;padding:28px 0 24px}.rate-panel{min-width:auto;width:100%}.btable td,.btable th{padding:8px 10px}}
 </style>
 </head>
 <body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="nav-brand">AI <span>Receptionist</span> Calculator</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('main',this)">Calculator</button>
+      <button class="nav-tab" onclick="showPage('settings',this)">Settings & Tiers</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════ MAIN PAGE ══════════════════════════════════════ -->
+<div class="page active" id="page-main">
 <div class="wrap">
 
-<!-- HEADER -->
-<header class="hdr">
-  <div class="hdr-left fade-up">
-    <div class="hdr-eyebrow">Real Estate · AI Automation · 2026</div>
-    <h1>AI Calling<br><em>Receptionist</em><br>Calculator</h1>
-    <p class="hdr-sub">Every cost accounted for — Twilio number rental, per-minute voice charges, AI platform, CRM integration and your profit margin. Adjust and share with clients.</p>
-  </div>
-  <div class="hdr-badge fade-up">
-    <div class="hdr-badge-label">Twilio India · Live Rates</div>
-    <div><span class="live-dot"></span>Outbound mobile: <strong>₹1.20/min</strong></div>
-    <div>Outbound landline: <strong>₹0.65/min</strong></div>
-    <div>Inbound: <strong>₹0.35/min</strong></div>
-    <div>Number rental: <strong>₹200/mo</strong></div>
-    <div>Failed attempt: <strong>₹1.26/call</strong></div>
-  </div>
-</header>
-
-<!-- BUFFER EXPLAINER -->
-<div class="stitle reveal"><span class="stitle-text">What is the Buffer?</span><div class="stitle-line"></div><span class="stitle-num">01</span></div>
-<div class="buffer-box reveal">
-  <div class="buffer-title">⚡ The 10% Buffer — Your Safety Net Against Hidden Costs</div>
-  <div class="buffer-body">Your calculated cost is what you <em>plan</em> to pay. Your actual bill is always higher. The buffer covers that invisible gap between spreadsheet and reality.</div>
-  <ul class="buffer-list">
-    <li><strong>Failed call attempt fees:</strong> Twilio charges ₹1.26 per outbound attempt even when nobody picks up. 100 missed calls = ₹126 gone silently every month.</li>
-    <li><strong>Per-minute rounding:</strong> Twilio rounds every call <em>up</em> to the next full minute. A 2 min 10 sec call is billed as 3 full minutes — inflating your actual minutes by 15–20% at scale.</li>
-    <li><strong>LLM token overruns:</strong> When leads ask unexpected questions, the AI burns extra tokens. Your AI platform bill quietly spikes above the base rate.</li>
-    <li><strong>Re-dials and retries:</strong> A dropped call mid-conversation triggers a retry — double billing on telephony AND AI for that call.</li>
-    <li><strong>Voicemail detection time:</strong> The AI stays on the line 10–15 seconds listening for voicemail tones. That time is billed. 200 voicemails/month ≈ 40 extra billed minutes.</li>
-    <li><strong>Mid-month platform surcharges:</strong> Some AI platforms silently add surcharges or update rates without prominent notice. Buffer absorbs this.</li>
-  </ul>
-  <div class="buffer-alert">→ 10% is conservative for real estate calling. Adjust it from 5% to 25% using the slider below based on your risk tolerance.</div>
-</div>
-
-<!-- SETUP FEE -->
-<div class="setup-box reveal" style="margin-top:14px">
-  <div class="setup-icon">🚀</div>
-  <div>
-    <div class="setup-title">One-Time Setup Fee — Charge This Separately</div>
-    <div class="setup-body">This calculator covers the <strong>monthly retainer only</strong>. For every new client, charge a separate one-time setup fee for: AI agent build & scripting, real estate qualification flow, Twilio number purchase & config, CRM integration, and UAT testing.</div>
-    <div class="setup-price">₹10,000 – ₹25,000</div>
-    <span class="tag-pill green">one-time</span>
-    <span class="tag-pill coral">not in monthly retainer</span>
-  </div>
-</div>
-
-<!-- CONFIGURE -->
-<div class="stitle reveal"><span class="stitle-text">Configure Your Setup</span><div class="stitle-line"></div><span class="stitle-num">02</span></div>
-<div class="g2 reveal">
-  <div class="card">
-    <div class="card-head"><span class="card-head-dot"></span>Call Volume & Duration</div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Total calls / month</div><div class="fl-sub">Outbound + inbound combined</div></div><div class="fl-val" id="lv-calls">500</div></div>
-      <input type="range" id="sl-calls" min="50" max="3000" step="50" value="500">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-eyebrow">Real Estate · AI Automation · 2026</div>
+      <h1>AI Calling<br><em>Receptionist</em><br>Calculator</h1>
+      <p class="hdr-sub">Every cost accounted for — Twilio number rental, per-minute voice, AI platform & CRM. Adjust below to get your exact monthly figure.</p>
     </div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Avg call duration</div><div class="fl-sub">Minutes per connected call</div></div><div class="fl-val" id="lv-dur">3.0 min</div></div>
-      <input type="range" id="sl-dur" min="1" max="12" step="0.5" value="3">
-    </div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Outbound % (to mobiles)</div><div class="fl-sub">Calling leads on mobile numbers</div></div><div class="fl-val" id="lv-ob">70%</div></div>
-      <input type="range" id="sl-ob" min="0" max="100" step="5" value="70">
-    </div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Unanswered call rate</div><div class="fl-sub">Attempts with no pickup</div></div><div class="fl-val" id="lv-miss">30%</div></div>
-      <input type="range" id="sl-miss" min="5" max="65" step="5" value="30">
+    <div class="rate-panel">
+      <div class="rate-panel-top">
+        <div class="rate-panel-label"><span class="live-dot"></span>Twilio India Rates</div>
+        <button class="rate-edit-btn" onclick="showPage('settings', document.querySelectorAll('.nav-tab')[1])">Edit ↗</button>
+      </div>
+      <div class="rate-rows" id="rate-display"></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-head"><span class="card-head-dot"></span>Twilio & Platform</div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Twilio numbers rented</div><div class="fl-sub">Dedicated Indian numbers</div></div><div class="fl-val" id="lv-nums">2</div></div>
-      <input type="range" id="sl-nums" min="1" max="10" step="1" value="2">
+  <!-- CONFIGURE -->
+  <div class="stitle reveal"><span class="stitle-text">Configure</span><div class="stitle-line"></div></div>
+  <div class="g2 reveal">
+    <div class="card">
+      <div class="card-head"><span class="card-head-dot"></span>Call Volume & Duration</div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Total calls / month</div><div class="fl-sub">Outbound + inbound combined</div></div><div class="fl-val" id="lv-calls">500</div></div>
+        <input type="range" id="sl-calls" min="50" max="50000" step="50" value="500">
+      </div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Avg call duration</div><div class="fl-sub">Minutes per connected call</div></div><div class="fl-val" id="lv-dur">3.0 min</div></div>
+        <input type="range" id="sl-dur" min="1" max="15" step="0.5" value="3">
+      </div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Outbound % (to mobiles)</div><div class="fl-sub">Calling leads on mobile numbers</div></div><div class="fl-val" id="lv-ob">70%</div></div>
+        <input type="range" id="sl-ob" min="0" max="100" step="5" value="70">
+      </div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Unanswered call rate</div><div class="fl-sub">Attempts with no pickup (billed anyway)</div></div><div class="fl-val" id="lv-miss">30%</div></div>
+        <input type="range" id="sl-miss" min="5" max="65" step="5" value="30">
+      </div>
     </div>
-    <div class="field">
-      <div class="fl" style="margin-bottom:8px"><div><div class="fl-label">AI Platform <span class="itag blue">per-min cost</span></div><div class="fl-sub">Select your voice AI provider</div></div></div>
-      <select id="sel-plat"></select>
-    </div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Buffer %</div><div class="fl-sub">Safety net for hidden overruns</div></div><div class="fl-val" id="lv-buf">10%</div></div>
-      <input type="range" id="sl-buf" min="5" max="25" step="1" value="10">
-    </div>
-    <div class="field">
-      <div class="fl"><div><div class="fl-label">Your target margin</div><div class="fl-sub">Profit over total cost</div></div><div class="fl-val" id="lv-margin">40%</div></div>
-      <input type="range" id="sl-margin" min="15" max="70" step="5" value="40">
+
+    <div class="card">
+      <div class="card-head"><span class="card-head-dot"></span>Twilio & Platform</div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Twilio numbers rented</div><div class="fl-sub">Dedicated Indian numbers · ₹200/no./mo</div></div><div class="fl-val" id="lv-nums">2</div></div>
+        <input type="range" id="sl-nums" min="1" max="20" step="1" value="2">
+      </div>
+      <div class="field">
+        <div class="fl" style="margin-bottom:8px"><div><div class="fl-label">AI Platform</div><div class="fl-sub">Select your voice AI provider</div></div></div>
+        <select id="sel-plat"></select>
+      </div>
+      <div class="field">
+        <div class="fl"><div><div class="fl-label">Your target margin</div><div class="fl-sub">Profit over total cost (min 10%)</div></div><div class="fl-val" id="lv-margin">40%</div></div>
+        <input type="range" id="sl-margin" min="10" max="70" step="5" value="40">
+      </div>
     </div>
   </div>
-</div>
 
-<!-- PLATFORM MANAGER -->
-<div class="stitle reveal"><span class="stitle-text">Manage AI Platforms</span><div class="stitle-line"></div><span class="stitle-num">03</span></div>
-<div class="card reveal">
-  <div class="card-head"><span class="card-head-dot"></span>Platform Registry — Add Your Private Platform</div>
-  <div class="plist" id="plist"></div>
-  <div class="add-form">
-    <div><div class="field-mini-label">Platform name</div><input type="text" id="inp-name" placeholder="e.g. My Private Platform"></div>
-    <div><div class="field-mini-label">USD per minute</div><input type="number" id="inp-rate" placeholder="0.000" min="0.001" step="0.001"></div>
-    <div style="padding-top:21px"><button class="btn btn-primary" onclick="addPlatform()">+ Add Platform</button></div>
+  <!-- METRICS -->
+  <div class="stitle reveal"><span class="stitle-text">Monthly Summary</span><div class="stitle-line"></div></div>
+  <div class="g5 reveal" id="metrics" style="grid-template-columns:repeat(auto-fit,minmax(155px,1fr))"></div>
+
+  <!-- BREAKDOWN -->
+  <div class="stitle reveal"><span class="stitle-text">Full Cost Breakdown</span><div class="stitle-line"></div></div>
+  <div class="card reveal" style="padding:0;overflow:hidden">
+    <table class="btable" id="btable"></table>
   </div>
-  <p style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:12px;line-height:1.6">Enter USD/min cost your private platform charges → it immediately appears in the selector above and updates all calculations.</p>
+
+  <footer class="footer reveal">
+    <div>Twilio India rates editable in Settings · USD/INR ₹84 · figures are estimates, actual billing may vary</div>
+    <div><a href="#">GitHub</a> · Real Estate AI Automation · 2026</div>
+  </footer>
+
 </div>
+</div><!-- end page-main -->
 
-<!-- METRICS -->
-<div class="stitle reveal"><span class="stitle-text">Live Monthly Summary</span><div class="stitle-line"></div><span class="stitle-num">04</span></div>
-<div class="g5 reveal" id="metrics" style="grid-template-columns:repeat(auto-fit,minmax(155px,1fr))"></div>
+<!-- ══════════════════════════════════════ SETTINGS PAGE ══════════════════════════════════════ -->
+<div class="page" id="page-settings">
+<div class="wrap">
 
-<!-- BREAKDOWN -->
-<div class="stitle reveal"><span class="stitle-text">Full Cost Breakdown</span><div class="stitle-line"></div><span class="stitle-num">05</span></div>
-<div class="card reveal" style="padding:0;overflow:hidden">
-  <table class="btable" id="btable"></table>
+  <div class="settings-hdr">
+    <h2>Settings & <em style="font-style:normal;color:var(--coral)">Tiers</em></h2>
+    <p>Edit Twilio rates, manage AI platforms, and view retainer tier pricing — all changes reflect instantly on the calculator.</p>
+  </div>
+
+  <!-- TWILIO RATES EDITOR -->
+  <div class="stitle reveal"><span class="stitle-text">Twilio India Rates</span><div class="stitle-line"></div></div>
+  <div class="note-box reveal">Update the rates below whenever Twilio changes pricing — the calculator on the main page will recalculate instantly.</div>
+  <div class="rate-edit-grid reveal" id="rate-editor"></div>
+
+  <!-- PLATFORM MANAGER -->
+  <div class="stitle reveal"><span class="stitle-text">AI Platform Manager</span><div class="stitle-line"></div></div>
+  <div class="card reveal">
+    <div class="card-head"><span class="card-head-dot"></span>Platform Registry</div>
+    <div class="plist" id="plist"></div>
+    <div class="add-form">
+      <div><div class="fml">Platform name</div><input type="text" id="inp-name" placeholder="e.g. My Private Platform"></div>
+      <div><div class="fml">USD per minute</div><input type="number" id="inp-rate" placeholder="0.000" min="0.001" step="0.001"></div>
+      <div style="padding-top:21px"><button class="btn btn-primary" onclick="addPlatform()">+ Add</button></div>
+    </div>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-top:12px;line-height:1.6">Custom platforms appear immediately in the main calculator dropdown.</p>
+  </div>
+
+  <!-- RETAINER TIERS -->
+  <div class="stitle reveal"><span class="stitle-text">Retainer Tiers — Based on Current Settings</span><div class="stitle-line"></div></div>
+  <div class="note-box reveal">These tiers auto-calculate using your current platform, rates, and margin from the calculator. Use as a reference when quoting clients.</div>
+  <div class="g3 reveal" id="tiers"></div>
+
+  <footer class="footer reveal">
+    <div>Changes here reflect live on the Calculator page</div>
+  </footer>
+
 </div>
+</div><!-- end page-settings -->
 
-<!-- TIERS -->
-<div class="stitle reveal"><span class="stitle-text">Retainer Tiers to Offer Clients</span><div class="stitle-line"></div><span class="stitle-num">06</span></div>
-<div class="g3 reveal" id="tiers"></div>
-
-<footer class="footer reveal">
-  <div>Twilio India rates sourced Jan 2026 · USD/INR ₹84 assumed · figures are estimates, actual billing may vary</div>
-  <div>Built for Real Estate AI Automation · <a href="https://github.com" target="_blank">GitHub</a></div>
-</footer>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-const USD=84,TW_MOB=1.20,TW_LAND=0.65,TW_IN=0.35,TW_NUM=200,TW_ATT=0.015*USD;
-const MAINT=3000,CRM=1500;
-let platforms=[
-  {id:'retell',name:'Retell AI',usd:0.07,locked:true},
-  {id:'bland', name:'Bland AI', usd:0.12,locked:true},
-  {id:'vapi',  name:'Vapi',     usd:0.18,locked:true}
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const USD = 84;
+const MAINT = 3000, CRM = 1500;
+
+// Twilio rates — editable
+let rates = {
+  outMob:  1.20,   // outbound to mobile ₹/min
+  outLand: 0.65,   // outbound to landline ₹/min (used as blended for non-mobile)
+  inbound: 0.35,   // inbound ₹/min
+  numRent: 200,    // number rental ₹/mo
+  failAtt: 1.26    // failed attempt ₹/call
+};
+
+let platforms = [
+  {id:'retell', name:'Retell AI', usd:0.07, locked:true},
+  {id:'bland',  name:'Bland AI',  usd:0.12, locked:true},
+  {id:'vapi',   name:'Vapi',      usd:0.18, locked:true}
 ];
-let selId='retell';
+let selId = 'retell';
 
-const $=id=>document.getElementById(id);
-const rv=id=>parseFloat($(id).value);
-const ri=n=>Math.round(n);
-const fmt=n=>'₹'+ri(n).toLocaleString('en-IN');
-const fmtN=n=>n.toLocaleString('en-IN');
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const rv = id => parseFloat($(id).value);
+const ri = n => Math.round(n);
+const fmt = n => '₹' + ri(n).toLocaleString('en-IN');
+const fmtN = n => n.toLocaleString('en-IN');
+const getP = () => platforms.find(p => p.id === selId) || platforms[0];
 
-function renderPlatformSelect(){
-  $('sel-plat').innerHTML=platforms.map(p=>`<option value="${p.id}" ${p.id===selId?'selected':''}>${p.name} — $${p.usd.toFixed(3)}/min (₹${(p.usd*USD).toFixed(2)}/min)</option>`).join('');
-  $('sel-plat').onchange=()=>{selId=$('sel-plat').value;compute()};
+// ── PAGE NAVIGATION ───────────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  $('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'settings') { renderRateEditor(); renderTiers(); }
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function renderPlatformList(){
-  $('plist').innerHTML=platforms.map(p=>`
-    <div class="pitem">
-      <div class="pitem-dot" style="background:${p.locked?'#e8603c':'#34d399'}"></div>
-      <div class="pitem-name">${p.name} ${p.locked?'<span class="pitem-tag">built-in</span>':''}</div>
-      <div class="pitem-rate">$${p.usd.toFixed(3)}/min · ₹${(p.usd*USD).toFixed(2)}/min</div>
-      ${!p.locked?`<button class="pitem-del" onclick="removePlat('${p.id}')" title="Remove">✕</button>`:''}
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── RATE DISPLAY (header panel on main page) ──────────────────────────────────
+function renderRateDisplay() {
+  const items = [
+    ['Outbound mobile', '₹' + rates.outMob.toFixed(2) + '/min'],
+    ['Outbound landline', '₹' + rates.outLand.toFixed(2) + '/min'],
+    ['Inbound', '₹' + rates.inbound.toFixed(2) + '/min'],
+    ['Number rental', '₹' + rates.numRent + '/mo'],
+    ['Failed attempt', '₹' + rates.failAtt.toFixed(2) + '/call'],
+  ];
+  $('rate-display').innerHTML = items.map(([l,v]) =>
+    `<div class="rate-row-item"><span class="rate-row-lbl">${l}</span><span class="rate-row-val">${v}</span></div>`
+  ).join('');
+}
+
+// ── RATE EDITOR (settings page) ───────────────────────────────────────────────
+function renderRateEditor() {
+  const fields = [
+    {key:'outMob',  label:'Outbound → Mobile (₹/min)',    hint:'Most leads on mobile'},
+    {key:'outLand', label:'Outbound → Landline (₹/min)',  hint:'Office/landline numbers'},
+    {key:'inbound', label:'Inbound Calls (₹/min)',        hint:'Leads calling back'},
+    {key:'numRent', label:'Number Rental (₹/mo)',         hint:'Per Twilio India number'},
+    {key:'failAtt', label:'Failed Attempt (₹/call)',      hint:'Charged even on no-pickup'},
+  ];
+  $('rate-editor').innerHTML = fields.map(f => `
+    <div class="redit">
+      <div class="redit-label">${f.label}</div>
+      <input type="number" step="0.01" value="${rates[f.key]}" oninput="updateRate('${f.key}',this.value)">
+      <div class="redit-hint">${f.hint}</div>
     </div>`).join('');
 }
 
-function addPlatform(){
-  const name=$('inp-name').value.trim();
-  const rate=parseFloat($('inp-rate').value);
-  if(!name){$('inp-name').style.borderColor='var(--red)';$('inp-name').focus();return}
-  if(!rate||rate<=0){$('inp-rate').style.borderColor='var(--red)';$('inp-rate').focus();return}
-  $('inp-name').style.borderColor='';$('inp-rate').style.borderColor='';
-  platforms.push({id:'c_'+Date.now(),name,usd:rate,locked:false});
-  $('inp-name').value='';$('inp-rate').value='';
-  renderPlatformSelect();renderPlatformList();compute();
+function updateRate(key, val) {
+  const v = parseFloat(val);
+  if (!isNaN(v) && v >= 0) {
+    rates[key] = v;
+    renderRateDisplay();
+    compute();
+    showToast('Rate updated → calculator refreshed');
+  }
 }
 
-function removePlat(id){
-  platforms=platforms.filter(p=>p.id!==id);
-  if(selId===id)selId=platforms[0].id;
-  renderPlatformSelect();renderPlatformList();compute();
+// ── PLATFORM SELECT ───────────────────────────────────────────────────────────
+function renderPlatformSelect() {
+  $('sel-plat').innerHTML = platforms.map(p =>
+    `<option value="${p.id}" ${p.id === selId ? 'selected' : ''}>${p.name} — $${p.usd.toFixed(3)}/min (₹${(p.usd*USD).toFixed(2)}/min)</option>`
+  ).join('');
+  $('sel-plat').onchange = () => { selId = $('sel-plat').value; compute(); };
 }
 
-function getP(){return platforms.find(p=>p.id===selId)||platforms[0]}
+// ── PLATFORM LIST (settings) ──────────────────────────────────────────────────
+function renderPlatformList() {
+  $('plist').innerHTML = platforms.map(p => `
+    <div class="pitem">
+      <div class="pitem-dot" style="background:${p.locked ? '#e8603c' : '#34d399'}"></div>
+      <div class="pitem-name">${p.name}${p.locked ? ' <span class="pitem-tag">built-in</span>' : ''}</div>
+      <div class="pitem-rate">$${p.usd.toFixed(3)}/min · ₹${(p.usd*USD).toFixed(2)}/min</div>
+      ${!p.locked ? `<button class="pitem-del" onclick="removePlat('${p.id}')" title="Remove">✕</button>` : ''}
+    </div>`).join('');
+}
 
-function compute(){
-  const calls=rv('sl-calls'),dur=rv('sl-dur');
-  const obPct=rv('sl-ob')/100,misPct=rv('sl-miss')/100;
-  const nums=rv('sl-nums'),bufPct=rv('sl-buf')/100,margin=rv('sl-margin')/100;
-  const plat=getP();
+function addPlatform() {
+  const name = $('inp-name').value.trim();
+  const rate = parseFloat($('inp-rate').value);
+  if (!name) { $('inp-name').style.borderColor = 'var(--red)'; $('inp-name').focus(); return; }
+  if (!rate || rate <= 0) { $('inp-rate').style.borderColor = 'var(--red)'; $('inp-rate').focus(); return; }
+  $('inp-name').style.borderColor = ''; $('inp-rate').style.borderColor = '';
+  platforms.push({id: 'c_'+Date.now(), name, usd: rate, locked: false});
+  $('inp-name').value = ''; $('inp-rate').value = '';
+  renderPlatformSelect();
+  renderPlatformList();
+  compute();
+  showToast(`"${name}" added to platforms`);
+}
 
-  $('lv-calls').textContent=ri(calls).toLocaleString('en-IN');
-  $('lv-dur').textContent=dur.toFixed(1)+' min';
-  $('lv-ob').textContent=ri(obPct*100)+'%';
-  $('lv-miss').textContent=ri(misPct*100)+'%';
-  $('lv-nums').textContent=ri(nums);
-  $('lv-buf').textContent=ri(bufPct*100)+'%';
-  $('lv-margin').textContent=ri(margin*100)+'%';
+function removePlat(id) {
+  platforms = platforms.filter(p => p.id !== id);
+  if (selId === id) selId = platforms[0].id;
+  renderPlatformSelect();
+  renderPlatformList();
+  compute();
+}
 
-  const connected=calls;
-  const totalAtt=ri(connected/(1-misPct));
-  const failed=totalAtt-connected;
-  const obC=ri(connected*obPct),ibC=connected-obC;
-  const obM=obC*dur,ibM=ibC*dur,totM=obM+ibM;
+// ── TIERS (settings page) ─────────────────────────────────────────────────────
+function renderTiers() {
+  const dur = rv('sl-dur');
+  const obPct = rv('sl-ob') / 100;
+  const misPct = rv('sl-miss') / 100;
+  const nums = rv('sl-nums');
+  const margin = rv('sl-margin') / 100;
+  const plat = getP();
 
-  const tw_num=nums*TW_NUM;
-  const tw_mob=obM*TW_MOB;
-  const tw_in=ibM*TW_IN;
-  const tw_att=failed*TW_ATT;
-  const tw_tot=tw_num+tw_mob+tw_in+tw_att;
+  function tierCalc(tc) {
+    const ta = ri(tc / (1 - misPct)), fa = ta - tc;
+    const ob = ri(tc * obPct), ib = tc - ob;
+    const om = ob * dur, im = ib * dur, tm = om + im;
+    const tw = (nums * rates.numRent) + (om * rates.outMob) + (im * rates.inbound) + (fa * rates.failAtt);
+    const ai = tm * plat.usd * USD + (plat.id === 'bland' ? ri(299 * USD) : 0);
+    const tot = tw + ai + MAINT + CRM;
+    const ret = Math.ceil(tot / (1 - margin) / 1000) * 1000;
+    return { cost: ri(tot), ret, profit: ri(ret - tot), perCall: ri(ret / tc) };
+  }
 
-  const ai_m=totM*plat.usd*USD;
-  const bland_fee=plat.id==='bland'?ri(299*USD):0;
-  const ai_tot=ai_m+bland_fee;
-  const fixed=MAINT+CRM;
-  const raw=tw_tot+ai_tot+fixed;
-  const buf=raw*bufPct;
-  const total=raw+buf;
-  const retainer=total/(1-margin);
-  const profit=retainer-total;
-  const perCallCost=total/connected;
-  const perCallCharge=retainer/connected;
+  const tcs = [{name:'Starter',calls:300},{name:'Growth',calls:800,pop:true},{name:'Scale',calls:2000}];
+  $('tiers').innerHTML = tcs.map((t, i) => {
+    const d = tierCalc(t.calls);
+    return `<div class="tier">
+      <div class="tier-glow"></div>
+      ${t.pop ? '<div class="tier-badge tag-pop">Most Popular</div>' : '<div class="tier-badge tag-empty"></div>'}
+      <div class="tier-name">${t.name}</div>
+      <div class="tier-calls">Up to ${fmtN(t.calls)} calls / month</div>
+      <div class="tier-price">${fmt(d.ret)}</div>
+      <div class="tier-mo">/month retainer</div>
+      <div class="tier-sep"></div>
+      <div class="tier-line"><span>Your cost</span><span>${fmt(d.cost)}</span></div>
+      <div class="tier-line"><span>Your profit</span><span class="green">${fmt(d.profit)}</span></div>
+      <div class="tier-line"><span>Per call</span><span>${fmt(d.perCall)}</span></div>
+      <div class="tier-line"><span>Platform</span><span>${plat.name}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ── MAIN COMPUTE ──────────────────────────────────────────────────────────────
+function compute() {
+  const calls   = rv('sl-calls');
+  const dur     = rv('sl-dur');
+  const obPct   = rv('sl-ob') / 100;
+  const misPct  = rv('sl-miss') / 100;
+  const nums    = rv('sl-nums');
+  const margin  = rv('sl-margin') / 100;
+  const plat    = getP();
+
+  $('lv-calls').textContent  = ri(calls).toLocaleString('en-IN');
+  $('lv-dur').textContent    = dur.toFixed(1) + ' min';
+  $('lv-ob').textContent     = ri(obPct * 100) + '%';
+  $('lv-miss').textContent   = ri(misPct * 100) + '%';
+  $('lv-nums').textContent   = ri(nums);
+  $('lv-margin').textContent = ri(margin * 100) + '%';
+
+  const connected  = calls;
+  const totalAtt   = ri(connected / (1 - misPct));
+  const failed     = totalAtt - connected;
+  const obC = ri(connected * obPct), ibC = connected - obC;
+  const obM = obC * dur, ibM = ibC * dur, totM = obM + ibM;
+
+  const tw_num  = nums * rates.numRent;
+  const tw_mob  = obM * rates.outMob;
+  const tw_in   = ibM * rates.inbound;
+  const tw_att  = failed * rates.failAtt;
+  const tw_tot  = tw_num + tw_mob + tw_in + tw_att;
+
+  const ai_m      = totM * plat.usd * USD;
+  const bland_fee = plat.id === 'bland' ? ri(299 * USD) : 0;
+  const ai_tot    = ai_m + bland_fee;
+  const fixed     = MAINT + CRM;
+  const total     = tw_tot + ai_tot + fixed;
+  const retainer  = total / (1 - margin);
+  const profit    = retainer - total;
+  const perCallCost   = total / connected;
+  const perCallCharge = retainer / connected;
 
   // metrics
-  $('metrics').innerHTML=[
-    {icon:'📞',label:'Connected Calls',val:fmtN(ri(connected)),sub:fmtN(ri(totalAtt))+' total attempts',cls:''},
-    {icon:'⏱',label:'Total Minutes',val:fmtN(ri(totM)),sub:ri(obM)+' out + '+ri(ibM)+' in',cls:''},
-    {icon:'💸',label:'Your Cost / Mo',val:fmt(total),sub:fmt(perCallCost)+' per call',cls:'c-red'},
-    {icon:'🧾',label:'Charge Client',val:fmt(retainer),sub:fmt(perCallCharge)+' per call',cls:'c-green'},
-    {icon:'📈',label:'Your Profit',val:fmt(profit),sub:ri(margin*100)+'% margin',cls:'c-warm'},
-  ].map(m=>`<div class="metric"><div class="metric-accent"></div><div class="metric-label">${m.icon} ${m.label}</div><div class="metric-val ${m.cls}">${m.val}</div><div class="metric-sub">${m.sub}</div></div>`).join('');
+  $('metrics').innerHTML = [
+    {icon:'📞', label:'Connected Calls', val:fmtN(ri(connected)), sub:fmtN(ri(totalAtt))+' total attempts', cls:''},
+    {icon:'⏱',  label:'Total Minutes',  val:fmtN(ri(totM)),       sub:ri(obM)+' out + '+ri(ibM)+' in',     cls:''},
+    {icon:'💸', label:'Your Cost / Mo', val:fmt(total),            sub:fmt(perCallCost)+' per call',        cls:'c-red'},
+    {icon:'🧾', label:'Charge Client',  val:fmt(retainer),         sub:fmt(perCallCharge)+' per call',      cls:'c-green'},
+    {icon:'📈', label:'Your Profit',    val:fmt(profit),           sub:ri(margin*100)+'% margin',           cls:'c-warm'},
+  ].map(m => `<div class="metric"><div class="metric-accent"></div><div class="metric-label">${m.icon} ${m.label}</div><div class="metric-val ${m.cls}">${m.val}</div><div class="metric-sub">${m.sub}</div></div>`).join('');
 
-  // breakdown
-  const blandRow=bland_fee>0?`<tr><td><span class="td-main">Bland AI Plan Fee (Build)</span><span class="td-note">$299/mo subscription — required for &gt;100 calls/day concurrency</span></td><td style="color:var(--text3);font-size:12px">Fixed · $299 × ₹${USD}</td><td>${fmt(bland_fee)}</td></tr>`:'';
+  // breakdown table
+  const blandRow = bland_fee > 0
+    ? `<tr><td><span class="td-main">Bland AI Plan Fee</span><span class="td-note">$299/mo subscription · required for &gt;100 calls/day concurrency</span></td><td style="color:var(--text3);font-size:12px">Fixed · $299 × ₹${USD}</td><td>${fmt(bland_fee)}</td></tr>`
+    : '';
 
-  $('btable').innerHTML=`
-  <thead><tr><th style="width:42%">Cost Item</th><th>Calculation</th><th>Amount / mo</th></tr></thead>
+  $('btable').innerHTML = `
+  <thead><tr><th style="width:44%">Cost Item</th><th>Calculation</th><th>Amount / mo</th></tr></thead>
   <tbody>
   <tr class="sec-head"><td colspan="3">📡 Twilio — Telephony & Number Costs</td></tr>
-  <tr><td><span class="td-main">Phone Number Rental</span><span class="td-note">₹200 per Twilio India number per month</span></td><td style="color:var(--text3);font-size:12px">${ri(nums)} no. × ₹200</td><td>${fmt(tw_num)}</td></tr>
-  <tr><td><span class="td-main">Outbound → Mobile Numbers</span><span class="td-note">₹1.20/min · ${ri(obC)} calls × ${dur.toFixed(1)} min avg</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(obM))} mins × ₹1.20</td><td>${fmt(tw_mob)}</td></tr>
-  <tr><td><span class="td-main">Inbound Calls (leads calling back)</span><span class="td-note">₹0.35/min · ${ri(ibC)} calls × ${dur.toFixed(1)} min avg</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(ibM))} mins × ₹0.35</td><td>${fmt(tw_in)}</td></tr>
-  <tr><td><span class="td-main">Failed Attempt Fee</span><span class="td-note">$0.015/attempt charged even when nobody picks up — ${fmtN(ri(failed))} failed attempts</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(failed))} × ₹${TW_ATT.toFixed(2)}</td><td>${fmt(tw_att)}</td></tr>
+  <tr><td><span class="td-main">Phone Number Rental</span><span class="td-note">₹${rates.numRent}/number/month · ${ri(nums)} number${ri(nums)>1?'s':''}</span></td><td style="color:var(--text3);font-size:12px">${ri(nums)} × ₹${rates.numRent}</td><td>${fmt(tw_num)}</td></tr>
+  <tr><td><span class="td-main">Outbound → Mobile Numbers</span><span class="td-note">₹${rates.outMob.toFixed(2)}/min · ${ri(obC)} calls × ${dur.toFixed(1)} min avg</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(obM))} mins × ₹${rates.outMob.toFixed(2)}</td><td>${fmt(tw_mob)}</td></tr>
+  <tr><td><span class="td-main">Inbound Calls</span><span class="td-note">₹${rates.inbound.toFixed(2)}/min · ${ri(ibC)} calls × ${dur.toFixed(1)} min avg</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(ibM))} mins × ₹${rates.inbound.toFixed(2)}</td><td>${fmt(tw_in)}</td></tr>
+  <tr><td><span class="td-main">Failed Attempt Fee</span><span class="td-note">₹${rates.failAtt.toFixed(2)}/attempt · charged on no-pickup · ${fmtN(ri(failed))} failed attempts</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(failed))} × ₹${rates.failAtt.toFixed(2)}</td><td>${fmt(tw_att)}</td></tr>
   <tr class="sub-row"><td colspan="2" style="color:var(--text2)">Twilio Subtotal</td><td>${fmt(tw_tot)}</td></tr>
   <tr class="sec-head"><td colspan="3">🤖 AI Platform — ${plat.name} ($${plat.usd.toFixed(3)}/min)</td></tr>
-  <tr><td><span class="td-main">Voice AI Per Minute</span><span class="td-note">STT (speech-to-text) + LLM reasoning + TTS (text-to-speech) bundled</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(totM))} mins × $${plat.usd} × ₹${USD}</td><td>${fmt(ai_m)}</td></tr>
+  <tr><td><span class="td-main">Voice AI Per Minute</span><span class="td-note">STT + LLM reasoning + TTS bundled · ${fmtN(ri(totM))} total mins</span></td><td style="color:var(--text3);font-size:12px">${fmtN(ri(totM))} mins × $${plat.usd} × ₹${USD}</td><td>${fmt(ai_m)}</td></tr>
   ${blandRow}
   <tr class="sub-row"><td colspan="2" style="color:var(--text2)">AI Platform Subtotal</td><td>${fmt(ai_tot)}</td></tr>
   <tr class="sec-head"><td colspan="3">🔧 Fixed Monthly Costs</td></tr>
-  <tr><td><span class="td-main">Agent Maintenance</span><span class="td-note">Prompt updates, script tweaks, edge-case fixes, regression test calls</span></td><td style="color:var(--text3);font-size:12px">Fixed</td><td>${fmt(MAINT)}</td></tr>
-  <tr><td><span class="td-main">CRM / Lead Integration</span><span class="td-note">Zapier / webhook → HubSpot / Salesforce / Google Sheets</span></td><td style="color:var(--text3);font-size:12px">Fixed</td><td>${fmt(CRM)}</td></tr>
+  <tr><td><span class="td-main">Agent Maintenance</span><span class="td-note">Prompt updates, script tweaks, edge-case fixes, testing</span></td><td style="color:var(--text3);font-size:12px">Fixed</td><td>${fmt(MAINT)}</td></tr>
+  <tr><td><span class="td-main">CRM / Lead Integration</span><span class="td-note">Zapier / webhook → HubSpot / Salesforce / Sheets</span></td><td style="color:var(--text3);font-size:12px">Fixed</td><td>${fmt(CRM)}</td></tr>
   <tr class="sub-row"><td colspan="2" style="color:var(--text2)">Fixed Subtotal</td><td>${fmt(fixed)}</td></tr>
-  <tr class="sec-head"><td colspan="3">⚡ Buffer — Safety Net</td></tr>
-  <tr><td><span class="td-main">Buffer @ ${ri(bufPct*100)}%</span><span class="td-note">Covers call rounding, retries, voicemail detection time, LLM token overruns & surprise fees</span></td><td style="color:var(--text3);font-size:12px">${fmt(raw)} × ${ri(bufPct*100)}%</td><td>${fmt(buf)}</td></tr>
   <tr class="total-row"><td colspan="2">🔴 Total Cost to YOU (per month)</td><td>${fmt(total)}</td></tr>
   <tr class="charge-row"><td colspan="2">🟢 Monthly Retainer to Charge Client (${ri(margin*100)}% margin)</td><td>${fmt(retainer)}</td></tr>
   <tr class="profit-row"><td colspan="2">🟡 Your Monthly Profit</td><td>${fmt(profit)}</td></tr>
   </tbody>`;
 
-  // tiers
-  function tierCalc(tc){
-    const ta=ri(tc/(1-misPct)),fa=ta-tc;
-    const ob=ri(tc*obPct),ib=tc-ob,om=ob*dur,im=ib*dur,tm=om+im;
-    const tw=(nums*TW_NUM)+(om*TW_MOB)+(im*TW_IN)+(fa*TW_ATT);
-    const ai=tm*plat.usd*USD+(plat.id==='bland'?ri(299*USD):0);
-    const raw2=tw+ai+MAINT+CRM;
-    const tot2=raw2*(1+bufPct);
-    const ret=Math.ceil(tot2/(1-margin)/1000)*1000;
-    return{cost:ri(tot2),ret,profit:ri(ret-tot2),perCall:ri(ret/tc)};
-  }
-  const tc=[{name:'Starter',calls:300},{name:'Growth',calls:800,pop:true},{name:'Scale',calls:2000}];
-  const act=calls<=450?0:calls<=1100?1:2;
-  $('tiers').innerHTML=tc.map((t,i)=>{
-    const d=tierCalc(t.calls);
-    const isAct=act===i;
-    return`<div class="tier ${isAct?'active':''}"><div class="tier-glow"></div>
-      ${isAct?'<div class="tier-badge tag-active">Your Config</div>':t.pop?'<div class="tier-badge tag-pop">Most Popular</div>':'<div class="tier-badge tag-empty"></div>'}
-      <div class="tier-name">${t.name}</div>
-      <div class="tier-calls">Up to ${fmtN(t.calls)} calls / month</div>
-      <div class="tier-price">${fmt(d.ret)}</div>
-      <div class="tier-mo">per month retainer</div>
-      <div class="tier-sep"></div>
-      <div class="tier-row"><span class="tier-row-label">Your cost</span><span class="tier-row-val">${fmt(d.cost)}</span></div>
-      <div class="tier-row"><span class="tier-row-label">Your profit</span><span class="tier-row-val green">${fmt(d.profit)}</span></div>
-      <div class="tier-row"><span class="tier-row-label">Per call</span><span class="tier-row-val">${fmt(d.perCall)}</span></div>
-      <div class="tier-row"><span class="tier-row-label">Platform</span><span class="tier-row-val">${plat.name}</span></div>
-    </div>`;
-  }).join('');
+  // also refresh tiers if settings page is visible
+  if ($('page-settings').classList.contains('active')) renderTiers();
 }
 
-// scroll reveal
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})
-},{threshold:0.08});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-['sl-calls','sl-dur','sl-ob','sl-miss','sl-nums','sl-buf','sl-margin'].forEach(id=>{$(id).addEventListener('input',compute)});
-['inp-name','inp-rate'].forEach(id=>{
-  $(id).addEventListener('input',()=>{$(id).style.borderColor=''});
-  $(id).addEventListener('keydown',e=>{if(e.key==='Enter')addPlatform()});
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+['sl-calls','sl-dur','sl-ob','sl-miss','sl-nums','sl-margin'].forEach(id => $(id).addEventListener('input', compute));
+['inp-name','inp-rate'].forEach(id => {
+  $(id).addEventListener('input', () => $(id).style.borderColor = '');
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') addPlatform(); });
 });
 
-renderPlatformList();
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+}, {threshold: 0.06});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderRateDisplay();
 renderPlatformSelect();
+renderPlatformList();
 compute();
 </script>
 </body>
